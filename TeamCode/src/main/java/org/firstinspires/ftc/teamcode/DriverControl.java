@@ -59,20 +59,16 @@ public class DriverControl extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
 
 
-           /* robot.turbo(gamepad1.right_bumper);
-
             robot.intakeOn(gamepad1.right_trigger);
 
             robot.intakeReverse(gamepad1.left_trigger);
 
-            robot.carouselOn(gamepad2.right_trigger);
-            robot.carouselReverse(gamepad1.left_trigger);
+            robot.carouselOn(gamepad2.left_stick_y);
+
 
             robot.armOn(gamepad2.right_stick_x);
-            robot.armReverse(gamepad2.right_stick_y); */
 
-
-
+            robot.deposit(gamepad1.a);
 
 
 
@@ -82,27 +78,27 @@ public class DriverControl extends LinearOpMode {
 
 
 
-        //    telemetry.addData("xVel", robot.robotPose.getXVelocity());
-         //   telemetry.addData("yVel", robot.robotPose.getYVelocity());
-      //      telemetry.addData("xAccel", robot.robotPose.getXAcceleration());
-        //    telemetry.addData("yAccel", robot.robotPose.getYAcceleration());
+             telemetry.addData("xVel", robot.robotPose.getXVelocity());
+             telemetry.addData("yVel", robot.robotPose.getYVelocity());
+             telemetry.addData("xAccel", robot.robotPose.getXAcceleration());
+             telemetry.addData("yAccel", robot.robotPose.getYAcceleration());
 
-      //      telemetry.addData("rot", robot.robotPose.getHeading());
-      //      telemetry.addData("x", robot.robotPose.getX());
-    ///        telemetry.addData("y", robot.robotPose.getY());
+             telemetry.addData("rot", robot.robotPose.getHeading());
+             telemetry.addData("x", robot.robotPose.getX());
+             telemetry.addData("y", robot.robotPose.getY());
 
 
-       //     telemetry.addData("Middle Odometer", (double) ((Motor) robot.components[2]).getEncoderValue());
-    ///        telemetry.addData("Left Odometer", (double) ((Motor) robot.components[0]).getEncoderValue());
-   ///         telemetry.addData("Right Odometer", -(double) ((Motor) robot.components[1]).getEncoderValue());
+             telemetry.addData("Middle Odometer", (double) ((Motor) robot.components[2]).getEncoderValue());
+             telemetry.addData("Left Odometer", (double) ((Motor) robot.components[0]).getEncoderValue());
+             telemetry.addData("Right Odometer", -(double) ((Motor) robot.components[1]).getEncoderValue());
 
-    //        telemetry.addData("Flywheel 1 RPM", robot.flywheel.currentRPM);
-     //       telemetry.addData("Flywheel 2 RPM", robot.flywheel.currentRPM2);
+             telemetry.addData("Flywheel 1 RPM", robot.flywheel.currentRPM);
+             telemetry.addData("Flywheel 2 RPM", robot.flywheel.currentRPM2);
 
-    //        telemetry.addData("Shooter 1 ", robot.flywheel.shooter1Speed);
-   //         telemetry.addData("Shooter 2", robot.flywheel.shooter2Speed);
+              telemetry.addData("Shooter 1 ", robot.flywheel.shooter1Speed);
+              telemetry.addData("Shooter 2", robot.flywheel.shooter2Speed);
 
-        //    telemetry.addData("toggle", robot.previousPrimeShooter);/
+              telemetry.addData("toggle", robot.previousPrimeShooter);
 
         }
     }

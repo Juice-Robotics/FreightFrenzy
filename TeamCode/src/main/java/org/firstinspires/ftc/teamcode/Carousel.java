@@ -1,42 +1,121 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.util.Range;
 
-public class carousel {
+public class Carousel {
 
     public Motor carousel;
-    double targetRPM = 30;
+    public static double targetRPM;
 
-    public Carousel(Component carouselMotor){
-        
-        this.carousel = (Motor) carouselMotor; 
-    }
     
     final double KP = 0.0001;
     final double KI = 0;
     final double KD = 0;
     
     public double currentRPM = 0;
+
+    private long lastTime;
+
+    private double pastTicks;
+
+    public double lastTarget = 5300;
     
     boolean spinmotor = false;
 
-    PIDController spinmotorPID = new spinmotor (targetRPM, KP, KI, KD, false);
+    double carouselSpeed;
 
-    public void start(){
+    private double shooterFF = 0.7;
+
+    public static PIDController spinmotorPID;
+
+    public Carousel(Component carouselMotor){
+
+        this.carousel = (Motor) carouselMotor;
+        //this.targetRPM  = speed;
+
+
+
+        carouselSpeed = 1;
+
+
+        lastTime = System.currentTimeMillis();
+
+        pastTicks = this.carousel.getEncoderValue();
+
+    }
+
+    public void start(float rpm ){
 
         spinmotor = true;
+        targetRPM = rpm;
+        spinmotorPID = new PIDController (targetRPM, KP, KI, KD, false);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+       // dashboard.addConfigVariable("PIDController", "CarouselPID", spinmotorPID);
+
+
     }
+
+
    
 
     public void updateRPM(){
 
-        if (targetRPM != currentRPM) {
+        if (lastTarget != targetRPM){
             spinmotorPID = new PIDController(targetRPM, KP, KI, KD, false);
+
         }
-    
-        double correction = spinmotorPID.update(currentRPM);
+
+        long time = System.currentTimeMillis();
+        double currentTicks = carousel.getEncoderValue();
+
+        lastTarget = targetRPM;
+
+        currentRPM = ((carousel.getEncoderValue() - pastTicks) / (time - lastTime)) * ((60000 * 40)/(28*22));
+
+
+        lastTime = time;
+
+        pastTicks = currentTicks;
+
+
+        double correction1 = spinmotorPID.update(currentRPM);
+
+
+        carouselSpeed= correction1 + shooterFF;
+
+
+        if (spinmotor){
+            carousel.setSpeed((float) Range.clip(carouselSpeed, -1, 1));
+
+        } else {
+            carousel.setSpeed(0);
+
+        }
         
     }
+
+
+    public void reverse () {
+        carousel.setSpeed(-0.4f);
+
+    }
+
+    public void turbo(){
+        carouselSpeed= 0.7;
+
+
+    }
+    public void resetMotorSpeeds(){
+        carouselSpeed= 0.7;
+
+    }
+
+    public void resetAllEncoders(){
+        carousel.resetEncoder();
+
+    }
+
 
     public void stop(){
         spinmotor = false;

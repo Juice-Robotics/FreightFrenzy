@@ -22,7 +22,7 @@ public class Robot {
 
     public Carousel carousel;
     public Depositor depositor;
-    public Arm arm;
+    public v4bArm v4bArm;
 
 
 
@@ -125,147 +125,49 @@ public class Robot {
                 new Motor(2, "backRight", map, false),                          //1 right odometer
                 new Motor(1, "frontLeft", map, true),                           //2 middle odometer
                 new Motor(0, "frontRight", map, false),                         //3
-              /*  new Motor(2, "forwardShooter", map, true),
-                new Motor(3, "rearShooter", map, false),
-                new StepperServo(0, "leftMag", map),
-                new StepperServo(0, "midMag", map),
-                new StepperServo(0, "rightMag", map),
-                new StepperServo(1, "flicker", map),
-                new Motor(0, "intakeFront", map, false),
-                new Motor(0, "intakeRear", map, false),
-                new StepperServo(0, "intakeServoFront", map),
-                new StepperServo(0, "intakeServoRear", map),
-                new StepperServo(0, "wobbleArm",map),
-                new StepperServo(0,"wobbleArm2", map),
-                new StepperServo(0, "wobbleClaw",map),
-                //fill in port number, carousel
-                new Motor (10, "carousel", map, false),
-                new StepperServo(0, "depositor", map),
-                new Motor (10, "leftArm", map, true),
+                new Motor(2, "carouselSpinner", map, true),                     //4
+                new Motor(3, "leftArm", map, true),                             //5
+                new Motor(0, "rightArm", map, false),                           //6
+                new Motor(0, "intakeMotor1", map, false),                       //7
+                new Motor(0, "intakeMotor1", map, false),                       //8
+                new StepperServo(0, "intakeServoFront", map),                          //9
+                new StepperServo(0, "intakeServoRear", map),                           //10
+                new StepperServo(0, "depositArm",map),                                 //11
+                new StepperServo(0,"depositArm2", map),                                //12
 
-
-                new Motor (10, "rightArm", map, false)
-
-             */
 
         };
 
-       /* if (auton){
-            drivetrain = new Mecanum(
-                    components[0],
-                    components[1],
-                    components[2],
-                    components[3],
-                    true
-            );
-            rrdrive = new SampleMecanumDrive(map);
-
-        } else {
-            drivetrain = new Mecanum(
-                    components[0],
-                    components[1],
-                    components[2],
-                    components[3],
-                    false
-            );
-        }
-*/
 
 
-      /*  this.gyro = new Gyro(map);
 
         this.flywheel = new FlyWheel(components[4], components[5]);
 
-        this.mag = new Mag(components[6], components[7], components[8]);
 
-        this.flicker = new Flicker(components[9]);
-
-        this.intake = new Intake((StepperServo) components[12], (StepperServo) components[13], (Motor) components[10], (Motor) components[11]);
+        this.intake = new Intake((StepperServo) components[11], (StepperServo) components[12], (Motor) components[9], (Motor) components[10]);
 
         this.carousel = new Carousel(components[14]);
         this.depositor = new Depositor(components[15]);
-        this.arm = new Arm(components[16], components[17]);
-        //this.intake = new Intake(servo1, servo2, motor1, motor2);
-
-       /// this.wobbleClaw = new WobbleGoal((StepperServo)components[16], (StepperServo)components[14], (StepperServo)components[15]);
-
-        drivetrain.resetAllEncoders();
-
-        currentR = gyro.getHeading();
-        targetR = currentR;
-
-        //lift.liftMotor2.resetEncoder();
-        //fakeMotor.resetEncoder();
+        this.v4bArm = new v4bArm(components[16], components[17]);
 
 
-       */
 
-      /*  currentY = getOdoY();
-        currentX = getOdoX();
 
-        pidXDistance = new PIDController(0, xKPR, xKIR, xKDR, false);
-        pidYDistance = new PIDController(0, yKPR, yKIR, yKDR, false);
-        pidRotation = new PIDController(0, rKPR, rKIR, rKDR, true);
-
-      */
 
     }
 
     public void updateLoop(){
 
-       /* robotPose.updateOdometry(new double[][]{
-                {(double) ((Motor) components[1]).getEncoderValue()}, //odo 1 = R
-                {-(double) ((Motor) components[0]).getEncoderValue()}, //odo 2 = L
-                {(double) ((Motor) components[2]).getEncoderValue()}  //odo 3 = M
-        });
-
-        currentR = gyro.getHeading();
-        lastY = currentY;
-        currentY = getOdoY();
-        lastX = currentX;
-        currentX = getOdoX();
-
-        flywheel.updateRPM();
 
 
-        double[] values = mpController.updateLoop();
-        xCor = (float) values[0];
-        yCor = (float) values[1];
-        rCor = (float) values[2];
-        if (auton) {
-            drivetrain.move(xCor, yCor, rCor);*/
+      //  flywheel.updateRPM();
+        v4bArm.updateDistance();
+        carousel.updateRPM();
 
-    }
 
 
 
-    public void resetMotorSpeeds(){
-        drivetrain.resetMotorSpeeds();
     }
-
-    public void stop() {
-        drivetrain.stop();
-    }
-
-    public void turbo(boolean turbo){
-        drivetrain.setTurbo(turbo);
-    }
-
-    public void drive(float xMove, float yMove, float rotate) {
-        drivetrain.move(xMove, yMove, rotate);
-    }
-
-
-    public float getOdoX(){
-        return 0.0f;
-        //return (fakeMotor.getEncoderValue() / (8192f)) * 6.1842375f;
-    }
-
-    public float getOdoY(){
-        return 0.0f;
-        //return (lift.liftMotor2.getEncoderValue() / (8192f)) * 6.1842375f;
-    }
-
 
 
 
@@ -309,135 +211,30 @@ public class Robot {
 
     public void carouselOn(float val) {
         if (val >= 0.5f){
-            carousel.start();
-            intakeOnForward = true;
+            carousel.start(20);
+
         } else if (!intakeOnReverse){
             carousel.stop();
-            intakeOnForward = false;
+
         }
     }
 
-    public void carouselReverse(float val) {
-        if (val >= 0.5f){
-            carousel.reverse();
-            intakeOnReverse = true;
-        } else if (!intakeOnForward){
-            carousel.stop();
-            intakeOnReverse = false;
-        }
-    }
+
     public void armOn(float val) {
-        if (val >= 0.5f){
-            arm.start();
-            intakeOnForward = true;
-        } else if (!intakeOnReverse){
-            arm.stop();
-            intakeOnForward = false;
-        }
+
+        v4bArm.armMotor1.setSpeed(val);
+
+        v4bArm.armMotor2.setSpeed(val);
     }
 
-    public void armReverse(float val) {
-        if (val >= 0.5f){
-            arm.reverse();
-            intakeOnReverse = true;
-        } else if (!intakeOnForward){
-            arm.stop();
-            intakeOnReverse = false;
-        }
-    }
-
-
-
-
-    public void primeShooter(boolean x) {
-        if (x && !previousPrimeShooter){
-            if (shooterPrimed){
-                shouldLower = true;
-                flywheel.stop();
-                shooterPrimed = false;
-            } else {
-                shouldLower = false;
-                flywheel.moveWheels();
-                shooterPrimed = true;
-            }
-        }
-
-        if (shouldLower) {
-            mag.lowerControl(x);
-        } else {
-            mag.raiseControl(x);
-        }
-
-        previousPrimeShooter = x;
-    }
-
-    public void shoot(boolean b) {
-        //flick
-        flicker.flickControl(b);
-    }
-
-    public void powershot(boolean bump) {
-        if (bump){
-            flywheel.targetRPM = 4500;
-        } else {
-            flywheel.targetRPM = 5300;
-        }
-    }
-/*
-    public void wobbleGoalRaise(boolean a) {
-        //Toggle raise or lower wobble goals
-        if(a && !previousWGArm) {
-            if (wobbleGoalArmOpen) {
-                wobbleClaw.armRaise();
-                wobbleGoalArmOpen = false;
-            } else {
-                wobbleClaw.armLower();
-                wobbleGoalArmOpen = true;
-            }
-        }
-        previousWGArm = a;
-    }
-
-    public void wobbleGoalClaw(boolean b) {
+    public void deposit(boolean b) {
         //Toggle claw open or close
-        if(b && !previousWGClaw) {
-            if (wobbleGoalClawOpen) {
-                wobbleClaw.clawClose();
-                wobbleGoalClawOpen = false;
-            } else {
-                wobbleClaw.clawOpen();
-                wobbleGoalClawOpen = true;
-            }
-        }
-        previousWGClaw = b;
-    }
-*/
-    public void microstepServo(boolean b){
-        if(b){
-            microstepWobble += 0.05;
-            ((StepperServo)components[6]).setAngle(90+(float) microstepWobble);
-        }
-    }
-    public void dropServo(boolean b){
-        if(b){
-            microstepWobble += 0.05;
-            ((StepperServo)components[6]).setAngle(90+(float) microstepWobble);
-        }
+
+        depositor.onClick(b);
     }
 
 
 
-    public static boolean tol(float current, float target, float tolerance){
-        return Math.abs(current - target) <= tolerance;
-    }
-
-    public boolean stopped(boolean x){
-        if(x){
-            return Math.abs(lastX - currentX) <= 0.01;
-        } else {
-            return Math.abs(lastY - currentY) <= 0.01;
-        }
-    }
     public void setDrivePower(double x, double y, double rx) {
         double powerFrontLeft = y + x + rx;
         double powerFrontRight = y - x - rx;
