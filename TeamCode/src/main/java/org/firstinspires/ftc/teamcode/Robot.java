@@ -99,7 +99,7 @@ public class Robot {
     private PIDController pidXDistance = new PIDController(0f, xKPR, xKIR, xKDR, false);
     private PIDController pidRotation = new PIDController(0.0f, rKPR, rKIR, rKDR, true);
 
-    public MotionProfilingController mpController = new MotionProfilingController(robotPose, 0.03, 0.00005, auton);
+
     public SampleMecanumDrive drive;
     public boolean previousPrimeShooter = false;
     public boolean shooterPrimed = false;
@@ -117,15 +117,15 @@ public class Robot {
 
     public Robot(HardwareMap map, boolean auton){
         this.auton = auton;
-        mpController.auton = this.auton;
-        SampleMecanumDrive drive = new SampleMecanumDrive(map);
+
+        this.drive = new SampleMecanumDrive(map);
 
         this.components = new Component[]{
                 new Motor(3, "backLeft", map, true),                            //0 left odometer
                 new Motor(2, "backRight", map, false),                          //1 right odometer
                 new Motor(1, "frontLeft", map, true),                           //2 middle odometer
                 new Motor(0, "frontRight", map, false),                         //3
-                new Motor(2, "forwardShooter", map, true),
+              /*  new Motor(2, "forwardShooter", map, true),
                 new Motor(3, "rearShooter", map, false),
                 new StepperServo(0, "leftMag", map),
                 new StepperServo(0, "midMag", map),
@@ -142,10 +142,15 @@ public class Robot {
                 new Motor (10, "carousel", map, false),
                 new StepperServo(0, "depositor", map),
                 new Motor (10, "leftArm", map, true),
+
+
                 new Motor (10, "rightArm", map, false)
+
+             */
+
         };
 
-        if (auton){
+       /* if (auton){
             drivetrain = new Mecanum(
                     components[0],
                     components[1],
@@ -164,10 +169,10 @@ public class Robot {
                     false
             );
         }
+*/
 
 
-
-        this.gyro = new Gyro(map);
+      /*  this.gyro = new Gyro(map);
 
         this.flywheel = new FlyWheel(components[4], components[5]);
 
@@ -192,17 +197,23 @@ public class Robot {
         //lift.liftMotor2.resetEncoder();
         //fakeMotor.resetEncoder();
 
-        currentY = getOdoY();
+
+       */
+
+      /*  currentY = getOdoY();
         currentX = getOdoX();
 
         pidXDistance = new PIDController(0, xKPR, xKIR, xKDR, false);
         pidYDistance = new PIDController(0, yKPR, yKIR, yKDR, false);
         pidRotation = new PIDController(0, rKPR, rKIR, rKDR, true);
+
+      */
+
     }
 
     public void updateLoop(){
 
-        robotPose.updateOdometry(new double[][]{
+       /* robotPose.updateOdometry(new double[][]{
                 {(double) ((Motor) components[1]).getEncoderValue()}, //odo 1 = R
                 {-(double) ((Motor) components[0]).getEncoderValue()}, //odo 2 = L
                 {(double) ((Motor) components[2]).getEncoderValue()}  //odo 3 = M
@@ -222,8 +233,8 @@ public class Robot {
         yCor = (float) values[1];
         rCor = (float) values[2];
         if (auton) {
-            drivetrain.move(xCor, yCor, rCor);
-        }
+            drivetrain.move(xCor, yCor, rCor);*/
+
     }
 
 
@@ -254,6 +265,10 @@ public class Robot {
         return 0.0f;
         //return (lift.liftMotor2.getEncoderValue() / (8192f)) * 6.1842375f;
     }
+
+
+
+
 
     /* -- Subsystem Control -- */
     public void toggleIntake(boolean a) {

@@ -25,11 +25,11 @@ public class DriverControl extends LinearOpMode {
         // This is assuming you are using StandardTrackingWheelLocalizer.java
         // Switch this class to something else (Like TwoWheeTrackingLocalizer.java) if your
         // configuration differs
-        StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
+      //  StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
-        myLocalizer.setPoseEstimate(PoseStorage.currentPose);
+      //  myLocalizer.setPoseEstimate(PoseStorage.currentPose);
 
         waitForStart();
 
@@ -39,16 +39,16 @@ public class DriverControl extends LinearOpMode {
             // Make sure to call myLocalizer.update() on *every* loop
             // Increasing loop time by utilizing bulk reads and minimizing writes will increase your
             // odometry accuracy
-            myLocalizer.update();
+          //  myLocalizer.update();
             robot.updateLoop(); //DISABLE FOR COMPETITION
 
             // Retrieve your pose
-            Pose2d myPose = myLocalizer.getPoseEstimate();
+          //  Pose2d myPose = myLocalizer.getPoseEstimate();
 
             // Print your pose to telemetry
-            telemetry.addData("x", myPose.getX());
-            telemetry.addData("y", myPose.getY());
-            telemetry.addData("heading", myPose.getHeading());
+          //  telemetry.addData("x", myPose.getX());
+          //  telemetry.addData("y", myPose.getY());
+          //  telemetry.addData("heading", myPose.getHeading());
             telemetry.update();
 
             // Teleop driving part
@@ -59,7 +59,7 @@ public class DriverControl extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
 
 
-            robot.turbo(gamepad1.right_bumper);
+           /* robot.turbo(gamepad1.right_bumper);
 
             robot.intakeOn(gamepad1.right_trigger);
 
@@ -69,7 +69,7 @@ public class DriverControl extends LinearOpMode {
             robot.carouselReverse(gamepad1.left_trigger);
 
             robot.armOn(gamepad2.right_stick_x);
-            robot.armReverse(gamepad2.right_stick_y);
+            robot.armReverse(gamepad2.right_stick_y); */
 
 
 
@@ -82,27 +82,27 @@ public class DriverControl extends LinearOpMode {
 
 
 
-            telemetry.addData("xVel", robot.robotPose.getXVelocity());
-            telemetry.addData("yVel", robot.robotPose.getYVelocity());
-            telemetry.addData("xAccel", robot.robotPose.getXAcceleration());
-            telemetry.addData("yAccel", robot.robotPose.getYAcceleration());
+        //    telemetry.addData("xVel", robot.robotPose.getXVelocity());
+         //   telemetry.addData("yVel", robot.robotPose.getYVelocity());
+      //      telemetry.addData("xAccel", robot.robotPose.getXAcceleration());
+        //    telemetry.addData("yAccel", robot.robotPose.getYAcceleration());
 
-            telemetry.addData("rot", robot.robotPose.getHeading());
-            telemetry.addData("x", robot.robotPose.getX());
-            telemetry.addData("y", robot.robotPose.getY());
+      //      telemetry.addData("rot", robot.robotPose.getHeading());
+      //      telemetry.addData("x", robot.robotPose.getX());
+    ///        telemetry.addData("y", robot.robotPose.getY());
 
 
-            telemetry.addData("Middle Odometer", (double) ((Motor) robot.components[2]).getEncoderValue());
-            telemetry.addData("Left Odometer", (double) ((Motor) robot.components[0]).getEncoderValue());
-            telemetry.addData("Right Odometer", -(double) ((Motor) robot.components[1]).getEncoderValue());
+       //     telemetry.addData("Middle Odometer", (double) ((Motor) robot.components[2]).getEncoderValue());
+    ///        telemetry.addData("Left Odometer", (double) ((Motor) robot.components[0]).getEncoderValue());
+   ///         telemetry.addData("Right Odometer", -(double) ((Motor) robot.components[1]).getEncoderValue());
 
-            telemetry.addData("Flywheel 1 RPM", robot.flywheel.currentRPM);
-            telemetry.addData("Flywheel 2 RPM", robot.flywheel.currentRPM2);
+    //        telemetry.addData("Flywheel 1 RPM", robot.flywheel.currentRPM);
+     //       telemetry.addData("Flywheel 2 RPM", robot.flywheel.currentRPM2);
 
-            telemetry.addData("Shooter 1 ", robot.flywheel.shooter1Speed);
-            telemetry.addData("Shooter 2", robot.flywheel.shooter2Speed);
+    //        telemetry.addData("Shooter 1 ", robot.flywheel.shooter1Speed);
+   //         telemetry.addData("Shooter 2", robot.flywheel.shooter2Speed);
 
-            telemetry.addData("toggle", robot.previousPrimeShooter);
+        //    telemetry.addData("toggle", robot.previousPrimeShooter);/
 
         }
     }

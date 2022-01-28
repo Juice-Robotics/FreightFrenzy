@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -51,8 +52,8 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-@Disabled
+@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Auton Opmode")
+
 public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
   /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
    * the following 4 detectable objects
@@ -86,7 +87,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "AR1tiAv/////AAABmWPBYmjW20ksvV69rGJcWkCHwoNx3z4ZZy0OscWClvc8o1PEXcH0xkTXECm5AS72ziRAYa99Ev23JE9xCYBmWRIRhzLqAxDfq7OP5BMRXd22HAFyvc7q48dzFwnmtXYx6zkcziRD3/G6mk/X5bL0ebV6ymW4jnh+PMB2EWvub+wYvR+QRwN6x/8R6QtR+j64UunrcPeaaL8zQhSeLezekJAfETWcx4zll5uByGyGE83FVDmvokpgl3LWe33gxCsOqC5utGaNgNlkMRFl0c7nerdYOYgkK56BQaYIY6quaDqLFCH/sGK/4QSZyF/uEYNSwjXFErDFLLuTzGuqNFA7q56xp6M2d+qWdOQ9GsMFBw8T ";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -131,6 +132,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 if (tfod != null) {
+
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();

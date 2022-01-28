@@ -3,30 +3,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.Robot;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 
-enum StateBlueWobble{
+enum StateREDWobble{
     START,
     DEPOSITBLOCK,
     MOVETODUCK,
@@ -50,8 +39,8 @@ enum StateBlueWobble{
 
 }
 
-@Autonomous(name="AutonTest2", group="Auton Opmode")
-public class AutonTest2 extends LinearOpMode {
+@Autonomous(name="AutonTestHSV", group="Auton Opmode")
+public class AutonTestHSV extends LinearOpMode {
 
     Robot robot;
     boolean first = true;
@@ -136,9 +125,9 @@ public class AutonTest2 extends LinearOpMode {
 
         pipelineHSV= new DuckDetectorHSV(telemetry);
 
-        webcam.setPipeline(pipeline);
+        //webcam.setPipeline(pipeline);
 
-        //webcam.setPipeline(pipelineHSV);
+        webcam.setPipeline(pipelineHSV);
         depositLevel = pipelineHSV.depositLevel;
       //  depositLevel = pipeline.depositLevel;
 
@@ -159,8 +148,6 @@ public class AutonTest2 extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         //telemetry = dashboard.getTelemetry();
         FtcDashboard.getInstance().startCameraStream(webcam, 10);
-
-        webcam.stopStreaming();
 
 
 
@@ -378,14 +365,15 @@ public class AutonTest2 extends LinearOpMode {
 
             if (isStopRequested()) return;
 
-          //  while (opModeIsActive()) {}
-               /* telemetry.addData("location", pipeline.getAnalysis());
+            while (opModeIsActive())
+            {
+                /*telemetry.addData("location", pipelineHSV.depositLevel);
 
 
                 telemetry.update();*/
 
 
-
+            }
 
 
 
@@ -398,7 +386,7 @@ public class AutonTest2 extends LinearOpMode {
                     .turn(Math.toRadians(90))
                     .build();*/
 
-       TrajectorySequence testSpline = robot.drive.trajectorySequenceBuilder(new Pose2d(0, 24, 0))
+       /* TrajectorySequence testSpline = robot.drive.trajectorySequenceBuilder(new Pose2d(0, 24, 0))
                // .splineTo(new Vector2d(24, 0), Math.toRadians(0))
                 //.splineTo(new Vector2d(0, 24), Math.toRadians(0))
                // .splineTo(new Vector2d(24, 24), Math.toRadians(0))
@@ -418,7 +406,7 @@ public class AutonTest2 extends LinearOpMode {
                 .strafeLeft(24)
                 .build();
 
-            robot.drive.followTrajectorySequence(testSpline);
+            robot.drive.followTrajectorySequence(testSpline);*/
 
 
     }

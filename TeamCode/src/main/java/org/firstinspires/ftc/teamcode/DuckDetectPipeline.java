@@ -20,9 +20,15 @@ import java.util.List;
 public class DuckDetectPipeline extends OpenCvPipeline {
     Scalar HOT_PINK = new Scalar(196, 23, 112);
 
+    public int position = 1;
+
     // Ducky Yellow, the default ducky color            Y    Cr     Cb    (Do not change Y)
-    public static Scalar scalarLowerYCrCb = new Scalar(0.0, 150.0, 120.0);
-    public static Scalar scalarUpperYCrCb = new Scalar(255.0, 255.0, 255.0);
+    public static Scalar scalarLowerYCrCb = new Scalar(210, 16, 146);
+    public static Scalar scalarUpperYCrCb = new Scalar(192, 26, 155);
+
+
+    public static Scalar lightHSV = new Scalar(60,100,100);
+    public static Scalar shadowHSV = new Scalar(54,100,97.6);
 
     // Ducky Green, for dem under-da-weather duckies         Y   Cr   Cb
     // public static Scalar scalarLowerYCrCb = new Scalar(  0.0, 0.0, 0.0);
@@ -57,7 +63,7 @@ public class DuckDetectPipeline extends OpenCvPipeline {
 
     private final Object sync = new Object();
 
-    public ContourPipeline(double borderLeftX, double borderRightX, double borderTopY, double borderBottomY) {
+    public DuckDetectPipeline(double borderLeftX, double borderRightX, double borderTopY, double borderBottomY) {
         this.borderLeftX = borderLeftX;
         this.borderRightX = borderRightX;
         this.borderTopY = borderTopY;
@@ -66,10 +72,12 @@ public class DuckDetectPipeline extends OpenCvPipeline {
 
     public void configureScalarLower(double y, double cr, double cb) {
         scalarLowerYCrCb = new Scalar(y, cr, cb);
+        //shadowHSV = new Scalar(y, cr, cb);
     }
 
     public void configureScalarUpper(double y, double cr, double cb) {
         scalarUpperYCrCb = new Scalar(y, cr, cb);
+       // lightHSV = new Scalar(y, cr, cb);
     }
 
     public void configureScalarLower(int y, int cr, int cb) {
@@ -84,10 +92,12 @@ public class DuckDetectPipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
         CAMERA_WIDTH = input.width();
         CAMERA_HEIGHT = input.height();
+
+
         try {
             // Process Image
             Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2YCrCb);
-            Core.inRange(mat, scalarLowerYCrCb, scalarUpperYCrCb, processed);
+            Core.inRange(mat,scalarLowerYCrCb,scalarUpperYCrCb, processed);
             // Core.bitwise_and(input, input, output, processed);
 
             // Remove Noise
@@ -109,7 +119,7 @@ public class DuckDetectPipeline extends OpenCvPipeline {
                     Point[] contourArray = contour.toArray();
 
                     // Bound Rectangle if Contour is Large Enough
-                    if (contourArray.length >= 15) {
+                    if (contourArray.length >= 10) {
                         MatOfPoint2f areaPoints = new MatOfPoint2f(contourArray);
                         Rect rect = Imgproc.boundingRect(areaPoints);
 

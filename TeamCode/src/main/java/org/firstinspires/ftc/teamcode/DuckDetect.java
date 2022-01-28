@@ -10,6 +10,7 @@ import org.opencv.core.Scalar;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import com.acmerobotics.dashboard.FtcDashboard;
 
 @Config
 @Autonomous(name="Detect Da Duck", group="Auton")
@@ -32,9 +33,16 @@ public class DuckDetect extends LinearOpMode {
     private double upperRuntime = 0;
 
     // Ducky Yellow Range                                 Y      Cr     Cb
-    public static Scalar scalarLowerYCrCb = new Scalar(  0.0, 150.0, 120.0);
-    public static Scalar scalarUpperYCrCb = new Scalar(255.0, 255.0, 255.0);
+    public static Scalar scalarLowerYCrCb = new Scalar(210, 16, 146);
+    public static Scalar scalarUpperYCrCb = new Scalar(192, 26,  155);
 
+    public static Scalar lightHSV = new Scalar(60,100,100);
+    public static Scalar shadowHSV = new Scalar(54,100,97.6);
+
+    public int position;
+
+
+    // first was 0.0, 150.0, 120.0 second was 255.0, 255.0, 255.0
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -49,6 +57,8 @@ public class DuckDetect extends LinearOpMode {
         pipeline.configureScalarUpper(scalarUpperYCrCb.val[0],scalarUpperYCrCb.val[1],scalarUpperYCrCb.val[2]);
 
         webcam.setPipeline(pipeline);
+
+        position  = pipeline.position;
 
         // Webcam Streaming
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
