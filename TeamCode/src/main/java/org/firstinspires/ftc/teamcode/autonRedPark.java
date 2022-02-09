@@ -28,32 +28,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.time.temporal.ValueRange;
 
 
-enum StateBlueWobble{
-    START,
-    DEPOSITBLOCK,
-    MOVETODUCK,
-    PARK,
-    FORWARDTOLINE,
-    STRAFETOSHOOT,
-    PRIMESHOOTER,
-    SHOOT,
-    UNPRIMESHOOTER,
-    SECONDLOAD,
-    WAITFORLOADCOMPLETE,
-    FORWARDTOLINEAGAIN,
-    SECONDPRIMESHOOTER,
-    SECONDSHOOT,
-    DETECTPILE,
-    UNPRIMESHOOTERAGAIN,
-    MOVE4,
-    MOVE1,
-    MOVE0,
-    DROPWOBBLE,
 
-}
 
-@Autonomous(name="AutonTest2", group="Auton Opmode")
-public class AutonTest2 extends LinearOpMode {
+@Autonomous(name="autonRedPark", group="Auton Opmode")
+public class autonRedPark extends LinearOpMode {
 
     Robot robot;
 
@@ -97,7 +75,7 @@ public class AutonTest2 extends LinearOpMode {
 
         //webcam.setPipeline(pipelineHSV);
         depositLevel = pipelineHSV.depositLevel;
-      //  depositLevel = pipeline.depositLevel;
+        //  depositLevel = pipeline.depositLevel;
 
         // Webcam Streaming
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -144,90 +122,90 @@ public class AutonTest2 extends LinearOpMode {
 
 
 
-            if (depositLevel == 0) {
-                forwardVal = 3;
-                armVal = 3;
+        if (depositLevel == 0) {
+            forwardVal = 3;
+            armVal = 3;
 
-            } else if (depositLevel == 1) {
-                forwardVal = 3;
-                armVal = 3;
-            } else {
+        } else if (depositLevel == 1) {
+            forwardVal = 3;
+            armVal = 3;
+        } else {
 
-                forwardVal = 3;
-                armVal = 3;
-            }
-
-
-            TrajectorySequence masterAuton = robot.drive.trajectorySequenceBuilder(startPose)
-                    .strafeLeft(3)
-                    .turn(Math.toRadians(90))
-                    .addDisplacementMarker(() -> {
-                        robot.carouselOn(4);
-                    })
-                    .waitSeconds(2)
-
-                    .turn(Math.toRadians(90))
-                    .strafeRight(5)
-                    .forward(3)
-
-                    .forward(forwardVal)
-                    .addTemporalMarker(() -> {
-
-                       // robot.armOn(3);
+            forwardVal = 3;
+            armVal = 3;
+        }
 
 
-                    })
+        TrajectorySequence masterAuton = robot.drive.trajectorySequenceBuilder(startPose)
+                .strafeLeft(3)
+                .turn(Math.toRadians(90))
+                .addDisplacementMarker(() -> {
+                    robot.carouselOn(4);
+                })
+                .waitSeconds(2)
 
-                    .waitSeconds(3)
+                .turn(Math.toRadians(90))
+                .strafeRight(5)
+                .forward(3)
 
-                    .back(20)
-                    .turn(Math.toRadians(90))
-                    .forward(10)
-                    .back(10)
-                    .forward(10)
-                    .back(10)
-                    .forward(10)
-                    .build();
+                .forward(forwardVal)
+                .addTemporalMarker(() -> {
+
+                    // robot.armOn(3);
 
 
-            waitForStart();
+                })
 
-            if (isStopRequested()) return;
+                .waitSeconds(3)
+
+                .back(20)
+                .turn(Math.toRadians(90))
+                .forward(10)
+                .back(10)
+                .forward(10)
+                .back(10)
+                .forward(10)
+                .build();
 
 
+        waitForStart();
+
+        if (isStopRequested()) return;
 
 
 
-       TrajectorySequence autonBlueDeposit = robot.drive.trajectorySequenceBuilder(new Pose2d(-34, 56, 0))
-               .splineTo(new Vector2d(-48, 65), Math.toRadians(0))
-
-               .addDisplacementMarker(() -> {
-                  // robot.carousel.start(20);
 
 
+        TrajectorySequence autonBlueDeposit = robot.drive.trajectorySequenceBuilder(new Pose2d(-34, 65, 0))
+                .splineTo(new Vector2d(-48, 65), Math.toRadians(0))
 
-               })
-               .waitSeconds(2)
-               .addDisplacementMarker(() -> {
-                   //robot.carousel.start(40);
-
-               })
-               .splineTo(new Vector2d(-10, 48), Math.toRadians(0))
-               .splineTo(new Vector2d(-10, 36), Math.toRadians(90))
-
-               .forward(forwardVal)
-               .addTemporalMarker(() -> {
+               // .addDisplacementMarker(() -> {
+                    // robot.carousel.start(20);
 
 
-             //      robot.v4bArm.start(armVal);
-              //     robot.depositor.onClick(true);
 
-                   /// maybe make a reset method
+              //  })
+                .waitSeconds(2)
+               // .addDisplacementMarker(() -> {
+                    //robot.carousel.start(40);
+
+                //})
+                .splineTo(new Vector2d(-10, 48), Math.toRadians(0))
+                .splineTo(new Vector2d(-10, 36), Math.toRadians(90))
+
+                .forward(forwardVal)
+               // .addTemporalMarker(() -> {
 
 
-               })
+                    //      robot.v4bArm.start(armVal);
+                    //     robot.depositor.onClick(true);
 
-               .build();
+                    /// maybe make a reset method
+
+
+                //})
+
+                .build();
 
 
 
@@ -248,7 +226,7 @@ public class AutonTest2 extends LinearOpMode {
                 .splineTo(new Vector2d(-48, -65), Math.toRadians(0))
 
                 .addDisplacementMarker(() -> {
-                  ///  robot.carousel.start(20);
+                    ///  robot.carousel.start(20);
 
 
 
@@ -265,8 +243,8 @@ public class AutonTest2 extends LinearOpMode {
                 .addTemporalMarker(() -> {
 
 
-                 //   robot.v4bArm.start(armVal);
-                 //   robot.depositor.onClick(true);
+                    //   robot.v4bArm.start(armVal);
+                    //   robot.depositor.onClick(true);
 
                     /// maybe make a reset method
 
@@ -278,13 +256,9 @@ public class AutonTest2 extends LinearOpMode {
 
         TrajectorySequence autonRedPark = robot.drive.trajectorySequenceBuilder(new Pose2d(0, 24, 0))
                 //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
-                .forward(48)
-                .back(24)
-                .forward(24)
-                .back(24)
-                .forward(56)
+                .back(35)
                 .build();
-            robot.drive.followTrajectorySequence(autonRedPark);
+        robot.drive.followTrajectorySequence(autonBlueDeposit);
 
 
     }

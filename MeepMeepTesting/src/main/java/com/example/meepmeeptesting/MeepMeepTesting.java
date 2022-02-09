@@ -18,7 +18,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(0, -48, 0))
+                        drive.trajectorySequenceBuilder(new Pose2d(-34, -65, 0))
                                // .forward(30)
                                // .turn(Math.toRadians(90))
                               //  .forward(30)
@@ -27,7 +27,9 @@ public class MeepMeepTesting {
                               //  .turn(Math.toRadians(90))
                              //   .forward(30)
                              //   .turn(Math.toRadians(90))
-                                 .splineTo(new Vector2d(-48, -48), Math.toRadians(0))
+
+
+                           /*      .splineTo(new Vector2d(-48, -65), Math.toRadians(0))
                                  .splineTo(new Vector2d(-10, -48), Math.toRadians(0))
                                 .splineTo(new Vector2d(-10, -36), Math.toRadians(90))
                                // .splineTo(new Vector2d(-10, 48), Math.toRadians(-90))
@@ -36,7 +38,12 @@ public class MeepMeepTesting {
                                 .strafeRight(24)
                                 .strafeLeft(24)
                                 .strafeRight(24)
-                                .strafeLeft(56)
+                                .strafeLeft(56)*/
+
+                                .splineTo(new Vector2d(-48, -65), Math.toRadians(0))
+                                .splineTo(new Vector2d(-10, -48), Math.toRadians(0))
+                                .splineTo(new Vector2d(-10, -36), Math.toRadians(90))
+                                .forward(5)
 
 
                                 // add a spline for cycling

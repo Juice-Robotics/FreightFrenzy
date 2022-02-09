@@ -3,13 +3,19 @@ package org.firstinspires.ftc.teamcode;
 public class Depositor {
     public StepperServo depositor;
 
-    public int initialAngle = 0;            /* arbitrary values for now */
+    public int initialAngle = 50;
+
+    public int intakeAngle = 20;
+
+    public int outakeAngle  = 5;
+
+    /* arbitrary values for now */
     public int desiredAngle = 45;
 
     public Depositor(Component depositorMotor){
         this.depositor = (StepperServo) depositorMotor;
 
-        depositor.setAngle(initialAngle);
+
     }
 
     public void onClick(boolean click){
@@ -20,12 +26,22 @@ public class Depositor {
         }
     }
 
-    public void start(){
+    public void reset() {
 
+        depositor.setAngle(initialAngle);
 
     }
 
-    public void stop(){
+    public void inTake(){
+
+        depositor.setAngle(intakeAngle);
+
+
+    }
+    public void outTake(){
+
+
+        depositor.setAngle(outakeAngle);
 
 
     }

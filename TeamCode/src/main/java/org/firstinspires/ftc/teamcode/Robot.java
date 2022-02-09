@@ -13,9 +13,10 @@ public class Robot {
    // public WobbleGoal wobbleClaw;
     public Mag mag;
     public Flicker flicker;
-    public SampleMecanumDrive rrdrive;
+
 
     public boolean previousMotorToggle = false;
+    public boolean previousCarouselToggle = false;
     public boolean previousServoToggle = false;
     public boolean previousWGClaw = false;
     public boolean previousWGArm = false;
@@ -102,13 +103,22 @@ public class Robot {
 
     public SampleMecanumDrive drive;
     public boolean previousPrimeShooter = false;
+    public boolean previousDepToggle = false;
+    public boolean previousArmToggle = false;
+    public boolean armEnabled= false;
     public boolean shooterPrimed = false;
     private boolean wobbleGoalClawOpen = false;
     private boolean wobbleGoalArmOpen = false;
+    private int carouselOn = 0;
     private boolean intakeOn = false;
+    private boolean depositorOn = false;
+
+    private int depOn = 0;
     private boolean shouldLower = true;
     private boolean intakeOnForward = false;
     private boolean intakeOnReverse = false;
+
+
 
     ///public Pose2d startPose = new Pose2d(0, 0, 0);
 
@@ -125,15 +135,15 @@ public class Robot {
                 new Motor(2, "backRight", map, false),                          //1 right odometer
                 new Motor(1, "frontLeft", map, true),                           //2 middle odometer
                 new Motor(0, "frontRight", map, false),                         //3
-                new Motor(2, "carouselSpinner", map, true),                     //4
-                new Motor(3, "leftArm", map, true),                             //5
-                new Motor(0, "rightArm", map, false),                           //6
-                new Motor(0, "intakeMotor1", map, false),                       //7
-                new Motor(0, "intakeMotor1", map, false),                       //8
-                new StepperServo(0, "intakeServoFront", map),                          //9
-                new StepperServo(0, "intakeServoRear", map),                           //10
-                new StepperServo(0, "depositArm",map),                                 //11
-                new StepperServo(0,"depositArm2", map),                                //12
+                new Motor(1, "carouselSpinner", map, true),                     //4
+                new Motor(2, "leftArm", map, true),                             //5
+                new Motor(3, "rightArm", map, false),                           //6
+                new Motor(0, "intakeMotor", map, false),                       //7
+                                      //8
+                new StepperServo(0, "intakeServo", map),                          //8
+                                   //10
+                new StepperServo(1, "depositArm",map)                           //9
+                                    //12
 
 
         };
@@ -141,14 +151,14 @@ public class Robot {
 
 
 
-        this.flywheel = new FlyWheel(components[4], components[5]);
+       // this.flywheel = new FlyWheel(components[4], components[5]);
 
 
-        this.intake = new Intake((StepperServo) components[11], (StepperServo) components[12], (Motor) components[9], (Motor) components[10]);
+        this.intake = new Intake((StepperServo) components[8], (Motor) components[7]);
 
-        this.carousel = new Carousel(components[14]);
-        this.depositor = new Depositor(components[15]);
-        this.v4bArm = new v4bArm(components[16], components[17]);
+        this.carousel = new Carousel(components[4]);
+        this.depositor = new Depositor(components[9]);
+        this.v4bArm = new v4bArm(components[5], components[6]);
 
 
 
@@ -161,8 +171,8 @@ public class Robot {
 
 
       //  flywheel.updateRPM();
-        v4bArm.updateDistance();
-        carousel.updateRPM();
+      /*  v4bArm.updateDistance();
+        carousel.updateRPM();*/
 
 
 
@@ -175,18 +185,79 @@ public class Robot {
     /* -- Subsystem Control -- */
     public void toggleIntake(boolean a) {
         //intake Control
-        intake.deploy();
 
-        if (a && !previousMotorToggle){
+
+       if (a && !previousMotorToggle){
             if (intakeOn){
-                intake.stop();
+                intake.deploy();
                 intakeOn = false;
             } else {
-                intake.start();
+                intake.retract();
                 intakeOn = true;
             }
         }
         previousMotorToggle = a;
+
+
+    }
+
+    public void toggleCarousel(boolean x) {
+
+        if (x && !previousCarouselToggle){
+            if (carouselOn == 0){
+                carousel.run(-0.2f);
+                carouselOn = 1;
+            }
+            else if (carouselOn == 1 && x){
+
+                carousel.turbo(-0.7f);
+                carouselOn = 2;
+
+
+            }
+            else if (carouselOn ==2 && x){
+                carousel.shut();
+                carouselOn = 0;
+            }
+        }
+        previousCarouselToggle = x;
+        //intake Control
+
+
+    }
+
+    public void toggleRedCarousel(boolean x) {
+
+        if (x && !previousCarouselToggle){
+            if (carouselOn == 0){
+                carousel.run(0.4f);
+                carouselOn = 1;
+            }
+            else if (carouselOn == 1 && x){
+
+                carousel.turbo(0.4f);
+                carouselOn = 2;
+
+
+            }
+            else if (carouselOn ==2 && x){
+                carousel.shut();
+                carouselOn = 0;
+            }
+        }
+        previousCarouselToggle = x;
+        //intake Control
+
+
+    }
+
+    public void deployIntake(boolean val){
+
+        intake.deploy();
+
+        intake.retract();
+
+
     }
 
     public void intakeOn(float val) {
@@ -210,27 +281,108 @@ public class Robot {
     }
 
     public void carouselOn(float val) {
+
+
+
+        //convert val to RPM
         if (val >= 0.5f){
             carousel.start(20);
 
-        } else if (!intakeOnReverse){
+        }
+
+        else{
             carousel.stop();
 
         }
     }
 
 
-    public void armOn(float val) {
+    public void armOn(boolean b) {
 
-        v4bArm.armMotor1.setSpeed(val);
+        if (b && !previousArmToggle){
+            if (armEnabled){
 
-        v4bArm.armMotor2.setSpeed(val);
+
+                while( v4bArm.armMotor1.getEncoderValue() < 0.5){
+
+                     v4bArm.run(0.4f);
+
+                }
+
+                armEnabled = false;
+            } else {
+
+                while( v4bArm.armMotor1.getEncoderValue() > -0.5){
+
+                    v4bArm.run(-0.4f);
+
+                }
+                armEnabled = true;
+            }
+        }
+        previousArmToggle = b;
+
+
     }
 
     public void deposit(boolean b) {
         //Toggle claw open or close
 
         depositor.onClick(b);
+
+
+
+    }
+
+    public void toggleDeposit(boolean b) {
+        //Toggle claw open or close
+
+        if (b && !previousDepToggle){
+            if (depositorOn){
+                depositor.inTake();
+                depositorOn = false;
+            } else {
+                depositor.outTake();
+                depositorOn = true;
+            }
+        }
+        previousDepToggle = b;
+
+
+    }
+
+    public void toggleDeposit2(boolean b){
+
+        if (b && !previousDepToggle){
+            if (depOn == 0){
+                depositor.reset();
+                depOn = 1;
+            }
+            else if (depOn == 1 && b){
+
+                depositor.inTake();
+                depOn = 2;
+
+
+            }
+            else if (depOn ==2 && b){
+                depositor.outTake();
+                depOn = 0;
+            }
+        }
+        previousDepToggle = b;
+    }
+
+    public void moveLift(float speedDown, float speedUp){
+        if(speedDown == 0 && speedUp == 0){
+            v4bArm.brake();
+        }else {
+            if (speedDown != 0.0){
+                v4bArm.retract(speedDown*0.45f);
+            } else if (speedUp != 0.0){
+                v4bArm.enable(speedUp*0.45f);
+            }
+        }
     }
 
 

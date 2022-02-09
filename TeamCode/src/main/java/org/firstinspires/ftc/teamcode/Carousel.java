@@ -31,7 +31,7 @@ public class Carousel {
 
     public Carousel(Component carouselMotor){
 
-        this.carousel = (Motor) carouselMotor;
+        carousel = (Motor) carouselMotor;
         //this.targetRPM  = speed;
 
 
@@ -41,7 +41,7 @@ public class Carousel {
 
         lastTime = System.currentTimeMillis();
 
-        pastTicks = this.carousel.getEncoderValue();
+        pastTicks = carousel.getEncoderValue();
 
     }
 
@@ -101,8 +101,13 @@ public class Carousel {
 
     }
 
-    public void turbo(){
-        carouselSpeed= 0.7;
+    public void run(float speed){
+
+        carousel.setSpeed(speed);
+    }
+
+    public void turbo(float speed){
+        carousel.setSpeed(speed);
 
 
     }
@@ -116,8 +121,13 @@ public class Carousel {
 
     }
 
+    public void shut(){
+
+        carousel.setSpeed(0);
+    }
 
     public void stop(){
+
         spinmotor = false;
     }
 }

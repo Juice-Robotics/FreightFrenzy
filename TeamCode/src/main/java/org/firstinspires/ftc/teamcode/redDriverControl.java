@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
  * packaged localizer tools.
  */
 @TeleOp(group = "advanced")
-public class DriverControl extends LinearOpMode {
+public class redDriverControl extends LinearOpMode {
 
 
     boolean changed = false;
@@ -32,11 +32,11 @@ public class DriverControl extends LinearOpMode {
         // This is assuming you are using StandardTrackingWheelLocalizer.java
         // Switch this class to something else (Like TwoWheeTrackingLocalizer.java) if your
         // configuration differs
-      //  StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
+        //  StandardTrackingWheelLocalizer myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
-      //  myLocalizer.setPoseEstimate(PoseStorage.currentPose);
+        //  myLocalizer.setPoseEstimate(PoseStorage.currentPose);
 
         waitForStart();
 
@@ -46,18 +46,18 @@ public class DriverControl extends LinearOpMode {
             // Make sure to call myLocalizer.update() on *every* loop
             // Increasing loop time by utilizing bulk reads and minimizing writes will increase your
             // odometry accuracy
-          //  myLocalizer.update();
+            //  myLocalizer.update();
 
 
             //robot.updateLoop(); //DISABLE FOR COMPETITION
 
             // Retrieve your pose
-          //  Pose2d myPose = myLocalizer.getPoseEstimate();
+            //  Pose2d myPose = myLocalizer.getPoseEstimate();
 
             // Print your pose to telemetry
-          //  telemetry.addData("x", myPose.getX());
-          //  telemetry.addData("y", myPose.getY());
-          //  telemetry.addData("heading", myPose.getHeading());
+            //  telemetry.addData("x", myPose.getX());
+            //  telemetry.addData("y", myPose.getY());
+            //  telemetry.addData("heading", myPose.getHeading());
             telemetry.update();
 
             // Teleop driving part
@@ -70,15 +70,15 @@ public class DriverControl extends LinearOpMode {
             robot.toggleIntake(gamepad1.a);
             robot.intakeOn(gamepad1.right_trigger);
 
-             robot.intakeReverse(gamepad1.left_trigger);
+            robot.intakeReverse(gamepad1.left_trigger);
 
-         //   robot.armOn(gamepad1.b);
+            //   robot.armOn(gamepad1.b);
 
-          //  robot.toggleDeposit(gamepad1.b);
+            //  robot.toggleDeposit(gamepad1.b);
             robot.toggleDeposit2(gamepad2.y);
-            robot.toggleCarousel(gamepad1.x);
+            robot.toggleRedCarousel(gamepad1.x);
 
-           robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
+            robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
 
 
          /*   if (gamepad1.b && !previousArmToggle){

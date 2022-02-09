@@ -279,7 +279,7 @@ public class AutonTestHSV extends LinearOpMode {
                     .forward(forwardVal)
                     .addTemporalMarker(() -> {
 
-                        robot.armOn(3);
+                      //  robot.armOn(3);
 
 
                     })
