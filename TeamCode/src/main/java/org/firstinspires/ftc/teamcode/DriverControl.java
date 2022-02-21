@@ -23,6 +23,7 @@ public class DriverControl extends LinearOpMode {
 
     public boolean previousArmToggle = false;
     public boolean armEnabled= false;
+    int armOn = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,6 +39,9 @@ public class DriverControl extends LinearOpMode {
         // See AutoTransferPose.java for further details
       //  myLocalizer.setPoseEstimate(PoseStorage.currentPose);
 
+
+        robot.v4bArm.resetAllEncoders();
+        robot.carousel.resetAllEncoders();
         waitForStart();
 
         if (isStopRequested()) return;
@@ -80,29 +84,63 @@ public class DriverControl extends LinearOpMode {
 
            robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
 
+           telemetry.addData("armDistance", robot.v4bArm.armMotor1.getEncoderValue());
+           telemetry.addData("spinDistance", robot.carousel.carousel.getEncoderValue());
 
-         /*   if (gamepad1.b && !previousArmToggle){
-                if (armEnabled){
 
-                    while( robot.v4bArm.armMotor1.getEncoderValue() > -0.2){
 
-                        robot.v4bArm.run(-0.3f);
 
+            if (gamepad2.b && !previousArmToggle){
+                if (armOn == 0){
+                    if (robot.v4bArm.armMotor1.getEncoderValue() < 300) {
+                        //robot.v4bArm.work(0.5f,100);
+                        robot.v4bArm.start(300);
+
+
+                    } else {
+
+                        robot.v4bArm.stop();
+                        armOn = 1;
 
                     }
 
-                    armEnabled = false;
-                } else {
+                }
+                else if (armOn == 1 && gamepad2.b){
 
-                    while( robot.v4bArm.armMotor1.getEncoderValue() < 0.2){
+                    if (robot.v4bArm.armMotor1.getEncoderValue() < 500) {
+                        //robot.v4bArm.work(0.5f,100);
+                        robot.v4bArm.start(550);
 
-                        robot.v4bArm.run(0.3f);
+
+                    } else {
+
+                        robot.v4bArm.stop();
+                        armOn = 2;
 
                     }
-                    armEnabled = true;
+
+
+
+
+
+                }
+                else if (armOn ==2 && gamepad2.b){
+                    if (robot.v4bArm.armMotor1.getEncoderValue() < 600) {
+                        //robot.v4bArm.work(0.5f,100);
+                        robot.v4bArm.start(600);
+
+
+                    } else {
+
+                        robot.v4bArm.stop();
+                        armOn = 0;
+
+                    }
                 }
             }
-            previousArmToggle = gamepad1.b;*/
+            previousArmToggle = gamepad2.b;
+            //intake Control
+
 
 
 

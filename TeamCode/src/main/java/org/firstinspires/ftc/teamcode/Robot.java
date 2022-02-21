@@ -171,8 +171,9 @@ public class Robot {
 
 
       //  flywheel.updateRPM();
-      /*  v4bArm.updateDistance();
-        carousel.updateRPM();*/
+      /*  v4bArm.updateDistance();*/
+        carousel.updateRPM();
+       v4bArm.updateDistance();
 
 
 
@@ -202,6 +203,31 @@ public class Robot {
     }
 
     public void toggleCarousel(boolean x) {
+
+        if (x && !previousCarouselToggle){
+            if (carouselOn == 0){
+                carousel.run(-0.2f);
+                carouselOn = 1;
+            }
+            else if (carouselOn == 1 && x){
+
+                carousel.turbo(-0.7f);
+                carouselOn = 2;
+
+
+            }
+            else if (carouselOn ==2 && x){
+                carousel.shut();
+                carouselOn = 0;
+            }
+        }
+        previousCarouselToggle = x;
+        //intake Control
+
+
+    }
+
+    public void toggleArm(boolean x) {
 
         if (x && !previousCarouselToggle){
             if (carouselOn == 0){
@@ -286,7 +312,7 @@ public class Robot {
 
         //convert val to RPM
         if (val >= 0.5f){
-            carousel.start(20);
+            carousel.start(5000);
 
         }
 

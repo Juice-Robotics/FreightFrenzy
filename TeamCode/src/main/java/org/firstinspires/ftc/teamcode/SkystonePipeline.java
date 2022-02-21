@@ -87,14 +87,18 @@ public class SkystonePipeline extends OpenCvPipeline {
         if (leftValue > 0.1){
             location = Location.LEFT;
             telemetry.addData("Skystone Location", "left");
+
+            position = 0;
         }
         else if (centerValue > 0.1){
             location = Location.CENTER;
             telemetry.addData("Skystone Location", "center");
+            position = 1;
         }
         else {
             location = Location.RIGHT;
             telemetry.addData("Skystone Location", "right");
+            position = 2;
         }
 
        /* boolean stoneLeft = leftValue > PERCENT_COLOR_THRESHOLD;
@@ -138,5 +142,10 @@ public class SkystonePipeline extends OpenCvPipeline {
 
     public Location getLocation() {
         return location;
+    }
+
+    public int getPosition(){
+
+        return position;
     }
 }

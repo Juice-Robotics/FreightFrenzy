@@ -8,12 +8,10 @@ public class Carousel {
     public Motor carousel;
     public static double targetRPM;
 
+
+    final double KP = 0.0005, KI = 0.00, KD = 0.00;
     
-    final double KP = 0.0001;
-    final double KI = 0;
-    final double KD = 0;
-    
-    public double currentRPM = 0;
+    public static double currentRPM = 0;
 
     private long lastTime;
 
@@ -27,6 +25,7 @@ public class Carousel {
 
     private double shooterFF = 0.7;
 
+    public double spinTime;
     public static PIDController spinmotorPID;
 
     public Carousel(Component carouselMotor){
@@ -45,13 +44,13 @@ public class Carousel {
 
     }
 
-    public void start(float rpm ){
+    public void start(double rpm){
 
         spinmotor = true;
         targetRPM = rpm;
         spinmotorPID = new PIDController (targetRPM, KP, KI, KD, false);
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-       // dashboard.addConfigVariable("PIDController", "CarouselPID", spinmotorPID);
+       // FtcDashboard dashboard = FtcDashboard.getInstance();
+       // dashboard.addConfigVariable("PIDController", "KP", KP);
 
 
     }
@@ -129,6 +128,7 @@ public class Carousel {
     public void stop(){
 
         spinmotor = false;
+        shut();
     }
 }
 

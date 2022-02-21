@@ -254,12 +254,42 @@ public class autonRedPark extends LinearOpMode {
                 .build();
 
 
-        TrajectorySequence autonRedPark = robot.drive.trajectorySequenceBuilder(new Pose2d(0, 24, 0))
+        TrajectorySequence autonRedPark = robot.drive.trajectorySequenceBuilder(startPose)
                 //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
-                .back(35)
-                .build();
-        robot.drive.followTrajectorySequence(autonBlueDeposit);
+               /* .splineTo(new Vector2d(10, 48), Math.toRadians(0))
+                .splineTo(new Vector2d(10, 36), Math.toRadians(90))*/
+                .strafeRight(24)
+                .forward(8)
+                .back(8)
+                .strafeLeft(36)
+                .turn(Math.toRadians(90))
+               /* .addTemporalMarker(() -> {
 
+                    robot.carousel.run(-3000);
+                    sleep(1500);
+                    robot.carousel.stop();
+            //   robot.v4bArm.start(armVal);
+            //   robot.depositor.onClick(true);
+
+            /// maybe make a reset method
+
+
+                })*/
+                .strafeLeft(24)
+                .build();
+
+
+       // robot.drive.followTrajectorySequence(autonRedPark);
+
+        robot.v4bArm.work(0.7f,700);
+      //  robot.v4bArm.resetAllEncoders();
+      //  robot.v4bArm.stop();
+       /* robot.carousel.run(-3000);
+        sleep(1500);
+        robot.carousel.stop();*/
+
+        telemetry.addData("taegetDistance", robot.v4bArm.targetDistance);
+        telemetry.addData("currentDistance", robot.v4bArm.armMotor1.getEncoderValue());
 
     }
 

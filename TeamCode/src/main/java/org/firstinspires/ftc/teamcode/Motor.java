@@ -32,6 +32,11 @@ public class Motor extends Component{
         return motor.getCurrentPosition();
 
     }
+    public void setTarget(int ticks){
+
+          motor.setTargetPosition(ticks);
+
+    }
 
     public void resetEncoder(){
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
