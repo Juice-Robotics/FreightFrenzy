@@ -5,7 +5,6 @@ import static java.lang.Thread.sleep;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -14,28 +13,14 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.Robot;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import java.lang.Thread;
-
-import java.time.temporal.ValueRange;
 
 
-
-
-@Autonomous(name="autonBluePark", group="Auton Opmode")
-public class autonBluePark extends OpMode {
+@Autonomous(name="autonBlueParkPart2", group="Auton Opmode")
+public class autonBlueParkPart2 extends OpMode {
 
     Robot robot;
 
@@ -113,12 +98,14 @@ public class autonBluePark extends OpMode {
         //telemetry = dashboard.getTelemetry();
         FtcDashboard.getInstance().startCameraStream(webcam, 10);
 
-       // webcam.stopStreaming();
+
 
 
         robot = new Robot(hardwareMap, true);
 
         depositLevel = pipey.getPosition();
+
+        webcam.stopStreaming();
 
         targetRPM = robot.carousel.targetRPM;
         currentRPM = robot.carousel.currentRPM;
@@ -291,9 +278,6 @@ public class autonBluePark extends OpMode {
 
         robot.updateLoop();
 
-        //long time = System.currentTimeMillis();
-
-
         TrajectorySequence currentPlan = robot.drive.trajectorySequenceBuilder(startPose)
                 //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
                 /* .splineTo(new Vector2d(10, 48), Math.toRadians(0))
@@ -304,7 +288,8 @@ public class autonBluePark extends OpMode {
 
         TrajectorySequence planPart2 = robot.drive.trajectorySequenceBuilder(startPose).forward(forwardVal)
                 .build();
-        TrajectorySequence planPart3 = robot.drive.trajectorySequenceBuilder(startPose).back(forwardVal)
+        TrajectorySequence planPart3 = robot.drive.trajectorySequenceBuilder(startPose)
+                .back(forwardVal)
                 .strafeLeft(46)
                 .build();
 
@@ -313,67 +298,14 @@ public class autonBluePark extends OpMode {
                 .build();
 
 
-
         TrajectorySequence planPart4 = robot.drive.trajectorySequenceBuilder(startPose)
                 .strafeLeft(24)
                 .build();
 
 
 
-       /* TrajectorySequence autonRedPark = robot.drive.trajectorySequenceBuilder(new Pose2d(-34, 65, 0))
-                //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
-
-                .splineTo(new Vector2d(10, 48), Math.toRadians(0))
-                .splineTo(new Vector2d(10, 36), Math.toRadians(90))
-                //.addTemporalMarker(10, () -> {
-
-                   // robot.carousel.start(5000);
-
-
-                    //   robot.v4bArm.start(armVal);
-                    //   robot.depositor.onClick(true);
-
-                    /// maybe make a reset method
-
-
-               // })
-              //  .strafeRight(10)
-                .build();*/
-
-
-
-
-       /* if (go == 0){
-            robot.drive.followTrajectorySequence(autonRedPark);
-            go = 1;
-
-        }*/
-
-
-        // lastTime = time;
-
-        //robot.v4bArm.move(100, 1000);
-
-        long startTimer = System.currentTimeMillis(); // t = 0
-
-
-       /* if((System.currentTimeMillis() - startTimer )> 0 && System.currentTimeMillis() - startTimer < 30000){
-            robot.carousel.start(5000);
-        } else {
-            robot.carousel.stop();
-        }*/
-
-       /* robot.carousel.start(5000);
-        //Thread.sleep(3000);
-        robot.carousel.stop();*/
-
-
-        /* robot.carousel.start(100);*/
-
-        // robot.carousel.start(1000);
-
         telemetry.addData("currentRPM", robot.carousel.currentRPM);
-        telemetry.addData("startTime", startTimer);
+
         telemetry.addData("currentTime", System.currentTimeMillis());
 
 
@@ -382,18 +314,49 @@ public class autonBluePark extends OpMode {
 
 
 
+        if(go == 0){
 
-        if (go == 0){
-
-
-
-            robot.drive.followTrajectorySequence(turnPlease);
-
-
+           // robot.drive.followTrajectorySequence(turnPlease);
+            robot.drive.followTrajectorySequence(currentPlan);
             go=1;
         }
 
-       else if (go == 1) {
+        else if (go == 1) {
+            if (robot.v4bArm.armMotor1.getEncoderValue() < armVal) {
+                //robot.v4bArm.work(0.5f,100);
+                robot.v4bArm.start(550);
+
+
+            } else {
+                go=2;
+                robot.v4bArm.stop();
+
+            }
+
+        }
+
+        else if (go == 2) {
+            robot.drive.followTrajectorySequence(planPart2);
+            go=3;
+        }
+
+        else if (go == 3) {
+            robot.depositor.inTake();
+            go = 4;
+        }
+
+       else if (go == 4){
+
+
+
+            robot.drive.followTrajectorySequence(planPart3);
+
+            go=5;
+        }
+
+
+
+       else if (go == 5) {
 
             if (robot.carousel.carousel.getEncoderValue() < 500) {
 
@@ -405,7 +368,7 @@ public class autonBluePark extends OpMode {
 
             }
             else {
-                go=2;
+                go=6;
                 robot.carousel.stop();
             }
 
@@ -415,15 +378,15 @@ public class autonBluePark extends OpMode {
 
 
 
-        else if (go == 2) {
+       else if (go == 6) {
              robot.drive.followTrajectorySequence(planPart4);
-            go=3;
+            go=7;
         }
-
-       else{
+        else{
             telemetry.addData("message", "AUTON FINISHED");
 
         }
+
 
 
 

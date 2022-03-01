@@ -55,6 +55,8 @@ public class autonRedPark extends LinearOpMode {
 
     public float forwardVal = 0;
 
+    public int go = 0;
+
 
 
     @Override
@@ -69,9 +71,9 @@ public class autonRedPark extends LinearOpMode {
 
         pipeline = new DuckDetector(telemetry);
 
-        pipelineHSV= new DuckDetectorHSV(telemetry);
+        pipelineHSV = new DuckDetectorHSV(telemetry);
 
-        webcam.setPipeline(pipeline);
+        webcam.setPipeline(pipelineHSV);
 
         //webcam.setPipeline(pipelineHSV);
         depositLevel = pipelineHSV.depositLevel;
@@ -100,6 +102,9 @@ public class autonRedPark extends LinearOpMode {
 
 
         robot = new Robot(hardwareMap, true);
+        robot.v4bArm.resetAllEncoders();
+        robot.carousel.resetAllEncoders();
+
 
        /* dashboard.addConfigVariable("PIDController", "CarouselPID", spinmotorPID);
         dashboard.addConfigVariable("PIDController", "armPID", robot.v4bArm.armPID);
@@ -118,183 +123,146 @@ public class autonRedPark extends LinearOpMode {
 
 
 
-
-
-
-
         if (depositLevel == 0) {
-            forwardVal = 3;
-            armVal = 3;
+            forwardVal = 8;
+            armVal = 755;
 
         } else if (depositLevel == 1) {
-            forwardVal = 3;
-            armVal = 3;
+            forwardVal = 7;
+            armVal = 950;
         } else {
 
-            forwardVal = 3;
-            armVal = 3;
+            forwardVal = 6;
+            armVal = 1060;
         }
-
-
-        TrajectorySequence masterAuton = robot.drive.trajectorySequenceBuilder(startPose)
-                .strafeLeft(3)
-                .turn(Math.toRadians(90))
-                .addDisplacementMarker(() -> {
-                    robot.carouselOn(4);
-                })
-                .waitSeconds(2)
-
-                .turn(Math.toRadians(90))
-                .strafeRight(5)
-                .forward(3)
-
-                .forward(forwardVal)
-                .addTemporalMarker(() -> {
-
-                    // robot.armOn(3);
-
-
-                })
-
-                .waitSeconds(3)
-
-                .back(20)
-                .turn(Math.toRadians(90))
-                .forward(10)
-                .back(10)
-                .forward(10)
-                .back(10)
-                .forward(10)
-                .build();
-
 
         waitForStart();
 
         if (isStopRequested()) return;
 
 
+        while (opModeIsActive() && !isStopRequested()) {
+
+            robot.updateLoop();
+
+            TrajectorySequence currentPlan = robot.drive.trajectorySequenceBuilder(startPose)
+                    //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
+                    /* .splineTo(new Vector2d(10, 48), Math.toRadians(0))
+                     .splineTo(new Vector2d(10, 36), Math.toRadians(90))*/
+                    .strafeRight(30)
+
+                    .build();
+
+            TrajectorySequence planPart2 = robot.drive.trajectorySequenceBuilder(startPose).forward(forwardVal)
+                    .build();
+            TrajectorySequence planPart3 = robot.drive.trajectorySequenceBuilder(startPose)
+                    .back(forwardVal)
+                    .strafeLeft(46)
+                    .build();
+
+            TrajectorySequence turnPlease = robot.drive.trajectorySequenceBuilder(startPose)
+                    .turn(Math.toRadians(100))
+                    .back(5)
+                    .build();
+
+
+            TrajectorySequence planPart4 = robot.drive.trajectorySequenceBuilder(startPose)
+                    .strafeLeft(24)
+                    .build();
 
 
 
-        TrajectorySequence autonBlueDeposit = robot.drive.trajectorySequenceBuilder(new Pose2d(-34, 65, 0))
-                .splineTo(new Vector2d(-48, 65), Math.toRadians(0))
+            telemetry.addData("currentRPM", robot.carousel.currentRPM);
 
-               // .addDisplacementMarker(() -> {
-                    // robot.carousel.start(20);
+            telemetry.addData("currentTime", System.currentTimeMillis());
 
 
-
-              //  })
-                .waitSeconds(2)
-               // .addDisplacementMarker(() -> {
-                    //robot.carousel.start(40);
-
-                //})
-                .splineTo(new Vector2d(-10, 48), Math.toRadians(0))
-                .splineTo(new Vector2d(-10, 36), Math.toRadians(90))
-
-                .forward(forwardVal)
-               // .addTemporalMarker(() -> {
-
-
-                    //      robot.v4bArm.start(armVal);
-                    //     robot.depositor.onClick(true);
-
-                    /// maybe make a reset method
-
-
-                //})
-
-                .build();
-
-
-
-        TrajectorySequence autonBluePark = robot.drive.trajectorySequenceBuilder(new Pose2d(0, 24, 0))
-                .splineTo(new Vector2d(-10, 65), Math.toRadians(-90))
-                .strafeLeft(48)
-                .strafeRight(24)
-                .strafeLeft(24)
-                .strafeRight(24)
-                .strafeLeft(56)
-                .build();
+            telemetry.addData("taegetDistance", robot.v4bArm.targetDistance);
+            telemetry.addData("currentDistance", robot.v4bArm.armMotor1.getEncoderValue());
 
 
 
 
-        TrajectorySequence autonRedDeposit = robot.drive.trajectorySequenceBuilder(new Pose2d(-34, -56, 0))
+            if(go == 0){
 
-                .splineTo(new Vector2d(-48, -65), Math.toRadians(0))
+                // robot.drive.followTrajectorySequence(turnPlease);
+                robot.drive.followTrajectorySequence(currentPlan);
+                go=1;
+            }
 
-                .addDisplacementMarker(() -> {
-                    ///  robot.carousel.start(20);
-
-
-
-                })
-                .waitSeconds(2)
-                .addDisplacementMarker(() -> {
-                    //robot.carousel.start(40);
-
-                })
-                .splineTo(new Vector2d(-10, -48), Math.toRadians(0))
-                .splineTo(new Vector2d(-10, -36), Math.toRadians(90))
-
-                .forward(forwardVal)
-                .addTemporalMarker(() -> {
+            else if (go == 1) {
+                if (robot.v4bArm.armMotor1.getEncoderValue() < 750) {
+                    //robot.v4bArm.work(0.5f,100);
+                    robot.v4bArm.start(550);
 
 
-                    //   robot.v4bArm.start(armVal);
-                    //   robot.depositor.onClick(true);
+                } else {
+                    go=2;
+                    robot.v4bArm.stop();
 
-                    /// maybe make a reset method
+                }
+
+            }
+
+            else if (go == 2) {
+                robot.drive.followTrajectorySequence(planPart2);
+                go=3;
+            }
+
+            else if (go == 3) {
+                robot.depositor.outTake();
+                go = 4;
+            }
+
+            else if (go == 4){
 
 
-                })
 
-                .build();
+                robot.drive.followTrajectorySequence(planPart3);
+
+                robot.drive.followTrajectorySequence(turnPlease);
+
+                go=5;
+            }
 
 
-        TrajectorySequence autonRedPark = robot.drive.trajectorySequenceBuilder(startPose)
-                //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
-               /* .splineTo(new Vector2d(10, 48), Math.toRadians(0))
-                .splineTo(new Vector2d(10, 36), Math.toRadians(90))*/
-                .strafeRight(24)
-                .forward(8)
-                .back(8)
-                .strafeLeft(36)
-                .turn(Math.toRadians(90))
-               /* .addTemporalMarker(() -> {
 
-                    robot.carousel.run(-3000);
-                    sleep(1500);
+            else if (go == 5) {
+
+                if (robot.carousel.carousel.getEncoderValue() > -500) {
+
+                    robot.carousel.start(-3000);
+
+
+
+
+
+                }
+                else {
+                    go=6;
                     robot.carousel.stop();
-            //   robot.v4bArm.start(armVal);
-            //   robot.depositor.onClick(true);
-
-            /// maybe make a reset method
+                }
 
 
-                })*/
-                .strafeLeft(24)
-                .build();
+
+            }
 
 
-       // robot.drive.followTrajectorySequence(autonRedPark);
 
-        robot.v4bArm.work(0.7f,700);
-      //  robot.v4bArm.resetAllEncoders();
-      //  robot.v4bArm.stop();
-       /* robot.carousel.run(-3000);
-        sleep(1500);
-        robot.carousel.stop();*/
+            else if (go == 6) {
+                robot.drive.followTrajectorySequence(planPart4);
+                go=7;
+            }
+            else{
+                telemetry.addData("message", "AUTON FINISHED");
 
-        telemetry.addData("taegetDistance", robot.v4bArm.targetDistance);
-        telemetry.addData("currentDistance", robot.v4bArm.armMotor1.getEncoderValue());
+            }
+
+
+        }
+
 
     }
-
-
-
 
 
 }

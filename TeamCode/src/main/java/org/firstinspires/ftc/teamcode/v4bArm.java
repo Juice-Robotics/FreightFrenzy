@@ -174,7 +174,6 @@ public class v4bArm{
     }
     public void stop () {
         armShift =false;
-
         armMotor1.setSpeed(0);
         armMotor2.setSpeed(0);
 

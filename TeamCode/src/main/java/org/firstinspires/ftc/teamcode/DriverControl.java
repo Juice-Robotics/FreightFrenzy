@@ -42,11 +42,14 @@ public class DriverControl extends LinearOpMode {
 
         robot.v4bArm.resetAllEncoders();
         robot.carousel.resetAllEncoders();
+
         waitForStart();
 
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+
+            robot.updateLoop();
             // Make sure to call myLocalizer.update() on *every* loop
             // Increasing loop time by utilizing bulk reads and minimizing writes will increase your
             // odometry accuracy
@@ -63,6 +66,9 @@ public class DriverControl extends LinearOpMode {
           //  telemetry.addData("y", myPose.getY());
           //  telemetry.addData("heading", myPose.getHeading());
             telemetry.update();
+
+
+
 
             // Teleop driving part
             // Mecanum example code from gm0
@@ -84,13 +90,20 @@ public class DriverControl extends LinearOpMode {
 
            robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
 
+           robot.armPreset(gamepad2.b);
+
+
            telemetry.addData("armDistance", robot.v4bArm.armMotor1.getEncoderValue());
            telemetry.addData("spinDistance", robot.carousel.carousel.getEncoderValue());
 
+           telemetry.addData("armOn", robot.armOn);
+            //intake Control
 
 
 
-            if (gamepad2.b && !previousArmToggle){
+
+
+          /*  if (gamepad2.b && !previousArmToggle){
                 if (armOn == 0){
                     if (robot.v4bArm.armMotor1.getEncoderValue() < 300) {
                         //robot.v4bArm.work(0.5f,100);
@@ -98,9 +111,9 @@ public class DriverControl extends LinearOpMode {
 
 
                     } else {
-
-                        robot.v4bArm.stop();
                         armOn = 1;
+                        robot.v4bArm.stop();
+
 
                     }
 
@@ -113,9 +126,9 @@ public class DriverControl extends LinearOpMode {
 
 
                     } else {
-
+                        armOn = 1;
                         robot.v4bArm.stop();
-                        armOn = 2;
+
 
                     }
 
@@ -131,18 +144,14 @@ public class DriverControl extends LinearOpMode {
 
 
                     } else {
-
-                        robot.v4bArm.stop();
                         armOn = 0;
+                        robot.v4bArm.stop();
+
 
                     }
                 }
             }
-            previousArmToggle = gamepad2.b;
-            //intake Control
-
-
-
+            previousArmToggle = gamepad2.b;*/
 
 
 

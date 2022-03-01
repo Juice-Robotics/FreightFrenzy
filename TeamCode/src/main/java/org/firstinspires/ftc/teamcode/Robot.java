@@ -114,6 +114,7 @@ public class Robot {
     private boolean depositorOn = false;
 
     private int depOn = 0;
+    public int armOn = 0;
     private boolean shouldLower = true;
     private boolean intakeOnForward = false;
     private boolean intakeOnReverse = false;
@@ -409,6 +410,70 @@ public class Robot {
                 v4bArm.enable(speedUp*0.45f);
             }
         }
+    }
+
+    public void armPreset(boolean b){
+
+
+       /*if (b && !previousArmToggle){
+           if (armOn == 0){
+                if (v4bArm.armMotor1.getEncoderValue() < 300) {
+                    //robot.v4bArm.work(0.5f,100);
+                    v4bArm.start(300);
+                    armOn = 1;
+                }
+
+                else if (v4bArm.armMotor1.getEncoderValue() == 600){
+                    v4bArm.start(600);
+                    armOn = 1;
+                    }
+
+                else if (v4bArm.armMotor1.getEncoderValue() == 600){
+                    v4bArm.start(600);
+                    armOn = 1;
+                }
+
+                } else {
+
+                    v4bArm.stop();
+                    armOn = 0;
+
+
+                }
+
+
+            }
+            else if (armOn == 1 && b){
+
+                if (v4bArm.armMotor1.getEncoderValue() < 500) {
+                    //robot.v4bArm.work(0.5f,100);
+                    v4bArm.start(550);
+
+
+                } else {
+
+                    v4bArm.stop();
+                    armOn = 2;
+
+
+                }
+            }
+            else if (armOn ==2 && b){
+                if (v4bArm.armMotor1.getEncoderValue() < 600) {
+                    //robot.v4bArm.work(0.5f,100);
+                    v4bArm.start(600);
+
+
+                } else {
+
+                    v4bArm.stop();
+                    armOn = 0;
+
+
+                }
+            }
+        }
+        previousArmToggle = b;*/
     }
 
 
