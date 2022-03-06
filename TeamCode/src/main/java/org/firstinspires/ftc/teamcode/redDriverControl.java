@@ -68,7 +68,7 @@ public class redDriverControl extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
 
             robot.toggleIntake(gamepad1.a);
-            robot.intakeOn(gamepad1.right_trigger);
+       //     robot.intakeOn(gamepad1.right_trigger);
 
             robot.intakeReverse(gamepad1.left_trigger);
 

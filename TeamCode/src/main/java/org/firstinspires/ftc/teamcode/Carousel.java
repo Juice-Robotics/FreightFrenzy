@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.Range;
 
-@Config
+//@Config
 public class Carousel {
 
     public Motor carousel;

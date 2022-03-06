@@ -23,6 +23,9 @@ public class DriverControl extends LinearOpMode {
 
     public boolean previousArmToggle = false;
     public boolean armEnabled= false;
+    private boolean intakeRetract = false;
+    private boolean intakeOnForward = false;
+    private boolean intakeOnReverse = false;
     int armOn = 0;
 
     PIDController armPID3;
@@ -43,7 +46,9 @@ public class DriverControl extends LinearOpMode {
 
 
         robot.v4bArm.resetAllEncoders();
-        robot.carousel.resetAllEncoders();
+        //robot.carousel.resetAllEncoders();
+
+
 
         waitForStart();
 
@@ -54,7 +59,13 @@ public class DriverControl extends LinearOpMode {
 
 
 
-            robot.updateLoop();
+            long startTime = System.currentTimeMillis();
+
+
+            //robot.updateLoop();
+             robot.v4bArm.updateDistance();
+
+
             // Make sure to call myLocalizer.update() on *every* loop
             // Increasing loop time by utilizing bulk reads and minimizing writes will increase your
             // odometry accuracy
@@ -83,7 +94,7 @@ public class DriverControl extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
 
             robot.toggleIntake(gamepad1.a);
-            robot.intakeOn(gamepad1.right_trigger);
+            robot.intakeOn(gamepad1.right_trigger,startTime);
 
             robot.intakeReverse(gamepad1.left_trigger);
 
@@ -95,12 +106,11 @@ public class DriverControl extends LinearOpMode {
 
            robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
 
-         //  robot.armPreset(gamepad2.b);
-
-           robot.armBottom(gamepad1.dpad_left);
-           robot.armMiddle(gamepad1.dpad_down);
+         //  robot.armPreset(gamepad2
+           robot.armBottom(gamepad1.left_bumper);
+           robot.armMiddle(gamepad1.dpad_left);
            robot.armTop(gamepad1.dpad_right);
-           robot.armRetract(gamepad1.dpad_up);
+           robot.armRetract(gamepad1.dpad_down);
 
 
            double last = robot.v4bArm.armMotor1.getEncoderValue();
@@ -116,36 +126,96 @@ public class DriverControl extends LinearOpMode {
            telemetry.addData("armOn", robot.armOn);
 
 
-         if (robot.v4bArm.armShift==false && robot.v4bArm.armMove==false){
+           /* if (gamepad1.left_trigger >= 0.5f){
+                robot.intake.start();
+                intakeOnForward = true;
+                intakeRetract = true;
+            } else if (!intakeOnReverse){
 
 
+                // intake.stop();
 
+                if (intakeRetract) {
+                    robot.intake.deploy();
 
+                    long starTime = startTime;
+                    /*if (System.currentTimeMillis() - startTime < 2) {
 
-              if ( (robot.v4bArm.armMotor1.getEncoderValue() > last+10) && (robot.v4bArm.armMotor1.getEncoderValue() < last-10) ){
-
-
-                 // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();
-
-
-                  robot.v4bArm.reverse(1000);
-
-              }
-              else {
-
-                  robot.v4bArm.stop();
-
-              }
-
-          }
-
-
-
-          else if (robot.v4bArm.armMotor1.getEncoderValue() < 0){
-
-                    robot.v4bArm.resetAllEncoders();
+                        robot.intake.reverse();
+                    }
+                    else{
+                        robot.intake.stop();
+                    }*/
+            /*        robot.intake.reverse();
+                    sleep(2);
+                    robot.intake.stop();
 
                 }
+
+                intakeRetract = false;
+                intakeOnForward = false;
+                // }
+            }*/
+            if (robot.v4bArm.armShift==false && robot.v4bArm.armMove==false){
+
+                //if ( robot.v4bArm.armMotor1.getEncoderValue() > last ){
+
+                if ( robot.v4bArm.armMotor1.getEncoderValue() > last){
+
+
+                    //&& (robot.v4bArm.armMotor1.getEncoderValue() < last-10)
+                    // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();
+
+
+                    // robot.v4bArm.retract(0.8f);
+
+                    robot.v4bArm.reverse(1000);
+
+
+                }
+                else {
+
+                    robot.v4bArm.stop();
+
+                }
+
+            }
+
+
+            /*if (gamepad1.right_bumper && intakeRetract) {
+
+                robot.intake.deploy();
+
+                long starTime = startTime;
+
+
+
+                robot.intake.reverse();
+
+                sleep(2000);
+
+               /* if(System.currentTimeMillis()-starTime> 2000){
+
+
+                    robot.intake.reverse();
+
+                }*/
+
+
+              /*  robot.intake.stop();
+
+
+            }
+
+            intakeRetract = gamepad1.right_bumper;*/
+
+
+
+           if (robot.v4bArm.armMotor1.getEncoderValue() < 0){
+
+                        robot.v4bArm.resetAllEncoders();
+
+                    }
 
             //intake Control
 

@@ -46,7 +46,7 @@ public class autonRedPark extends LinearOpMode {
     private StateBlueWobble currentState;
 
     private OpenCvCamera webcam;
-    private DuckDetector pipeline;
+    private SkystonePipeline pipeline;
     private DuckDetectorHSV pipelineHSV;
     private DuckDetectPipeline pipelineOG;
 
@@ -75,14 +75,14 @@ public class autonRedPark extends LinearOpMode {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         //OpenCV Pipeline
 
-        pipeline = new DuckDetector(telemetry);
+        pipeline = new SkystonePipeline(telemetry);
 
         pipelineHSV = new DuckDetectorHSV(telemetry);
 
-        webcam.setPipeline(pipelineHSV);
+        webcam.setPipeline(pipeline);
 
         //webcam.setPipeline(pipelineHSV);
-        depositLevel = pipelineHSV.depositLevel;
+
         //  depositLevel = pipeline.depositLevel;
 
         // Webcam Streaming
@@ -103,7 +103,12 @@ public class autonRedPark extends LinearOpMode {
         //telemetry = dashboard.getTelemetry();
         FtcDashboard.getInstance().startCameraStream(webcam, 10);
 
-        webcam.stopStreaming();
+
+        depositLevel = pipeline.getPosition();
+
+        telemetry.addData("Positon", depositLevel);
+
+       // webcam.stopStreaming();
 
 
 
@@ -132,25 +137,43 @@ public class autonRedPark extends LinearOpMode {
 
 
 
-    /*    if (depositLevel == 0) {
-            forwardVal = 8;
+       if (depositLevel == 0) {
+            forwardVal = 5;
             armVal = 755;
 
         } else if (depositLevel == 1) {
-            forwardVal = 7;
+            forwardVal = 2;
             armVal = 950;
         } else {
 
-            forwardVal = 6;
+            forwardVal = 3;
             armVal = 1000;
-            bottom = false;
-        }*/
+            bottom = true;
+        }
 
-        forwardVal = 5;
+      //  forwardVal = 5;
 
-        armVal = 755;
+      //  armVal = 850;
 
         waitForStart();
+
+        depositLevel = pipeline.getPosition();
+
+        telemetry.addData("Positon", depositLevel);
+
+        if (depositLevel == 0) {
+            forwardVal = 5;
+            armVal = 700;
+
+        } else if (depositLevel == 1) {
+            forwardVal = 3;
+            armVal = 850;
+        } else {
+
+            forwardVal = 3;
+            armVal = 1000;
+            bottom = true;
+        }
 
         if (isStopRequested()) return;
 
@@ -202,6 +225,8 @@ public class autonRedPark extends LinearOpMode {
 
 
 
+            //sleep(5);
+
             if(go == 0){
 
                 // robot.drive.followTrajectorySequence(turnPlease);
@@ -218,9 +243,11 @@ public class autonRedPark extends LinearOpMode {
                 if(bottom) {
 
 
-                    if (robot.v4bArm.armMotor1.getEncoderValue() < 755) {
+
+                    //og 755
+                    if (robot.v4bArm.armMotor1.getEncoderValue() < armVal) {
                         //robot.v4bArm.work(0.5f,100);
-                        robot.v4bArm.start(755);
+                        robot.v4bArm.start(armVal);
 
 
                     } else {
@@ -252,9 +279,9 @@ public class autonRedPark extends LinearOpMode {
                 }
                 else{
 
-                    if (robot.v4bArm.armMotor1.getEncoderValue() < 700) {
+                    if (robot.v4bArm.armMotor1.getEncoderValue() < armVal) {
                         //robot.v4bArm.work(0.5f,100);
-                        robot.v4bArm.start(700);
+                        robot.v4bArm.start(armVal);
 
 
                     } else {
@@ -274,7 +301,8 @@ public class autonRedPark extends LinearOpMode {
             else if (go == 3) {
 
 
-                if ( (robot.v4bArm.armMotor1.getEncoderValue() > 700+10) && (robot.v4bArm.armMotor1.getEncoderValue() < 700-10) ){
+                if ( (robot.v4bArm.armMotor1.getEncoderValue() > armVal+10) && (robot.v4bArm.armMotor1.getEncoderValue() < armVal-10) ){
+                //if ( robot.v4bArm.armMotor1.getEncoderValue() > armVal){
 
 
                     // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+
 public class Robot {
     public Component[] components;
     public Mecanum drivetrain;
@@ -107,6 +108,8 @@ public class Robot {
     public boolean previousArmToggle = false;
     public boolean previousArmToggle2 = false;
     public boolean previousArmToggle3 = false;
+    public boolean previousArmToggle4 = false;
+    public boolean previousArmToggle5 = false;
     public boolean armEnabled= false;
     public boolean shooterPrimed = false;
     private boolean wobbleGoalClawOpen = false;
@@ -120,12 +123,15 @@ public class Robot {
     private boolean shouldLower = true;
     private boolean intakeOnForward = false;
     private boolean intakeOnReverse = false;
+    private boolean intakeRetract = false;
 
     private boolean armPrimer = false;
 
     private boolean armGo1 = false;
     private boolean armGo2 = false;
     private boolean armGo3 = false;
+    private int i = 0;
+
 
 
     ///public Pose2d startPose = new Pose2d(0, 0, 0);
@@ -181,12 +187,14 @@ public class Robot {
       //  flywheel.updateRPM();
       /*  v4bArm.updateDistance();*/
         carousel.updateRPM();
-       v4bArm.updateDistance();
+       v4bArm.updateDistance();}
 
 
 
 
-    }
+
+
+
 
 
 
@@ -235,30 +243,6 @@ public class Robot {
 
     }
 
-    public void toggleArm(boolean x) {
-
-        if (x && !previousCarouselToggle){
-            if (carouselOn == 0){
-                carousel.run(-0.2f);
-                carouselOn = 1;
-            }
-            else if (carouselOn == 1 && x){
-
-                carousel.turbo(-0.7f);
-                carouselOn = 2;
-
-
-            }
-            else if (carouselOn ==2 && x){
-                carousel.shut();
-                carouselOn = 0;
-            }
-        }
-        previousCarouselToggle = x;
-        //intake Control
-
-
-    }
 
     public void toggleRedCarousel(boolean x) {
 
@@ -269,7 +253,7 @@ public class Robot {
             }
             else if (carouselOn == 1 && x){
 
-                carousel.turbo(0.4f);
+                carousel.turbo(0.7f);
                 carouselOn = 2;
 
 
@@ -294,13 +278,93 @@ public class Robot {
 
     }
 
-    public void intakeOn(float val) {
+
+
+
+    public void intakeOn(float val, long startTime) throws InterruptedException {
+
+
         if (val >= 0.5f){
             intake.start();
             intakeOnForward = true;
-        } else if (!intakeOnReverse){
+            intakeRetract = true;
+
+            i=1;
+        }
+
+        else if (i == 1){
+
+            intake.deploy();
+
+            long starTime = startTime;
+
+
+
+            intake.reverse();
+
+            Thread.sleep(1000);
+
+               /* if(System.currentTimeMillis()-starTime> 2000){
+
+
+                    robot.intake.reverse();
+
+                }*/
+
+
             intake.stop();
+
+            i= 0;
+
+
+
+
+        }
+
+        else if (!intakeOnReverse){
+
+
+           //intake.stop();
+            //
+            //
+            //
+            /*intake.deploy();
+
+           long starTime = startTime;
+
+
+
+            intake.reverse();
+
+            Thread.sleep(2000);
+
+               /* if(System.currentTimeMillis()-starTime> 2000){
+
+
+                    robot.intake.reverse();
+
+                }*/
+
+
+            intake.stop();
+
+
+
+            //  if(intakeRetract) {
+           /*     intake.deploy();
+
+                long starTime = startTime;
+                if (System.currentTimeMillis() - startTime < 2) {
+
+                    intake.reverse();
+                }
+                else{
+                    intake.stop();
+                }
+
+               // intakeRetract = false;*/
             intakeOnForward = false;
+           // }
         }
     }
 
@@ -453,27 +517,29 @@ public class Robot {
 
         if (b && previousArmToggle2) {
 
-
-
-            armGo1 = true;
-
-
-
-
-        }
-
-        if(armGo1) {
             if (v4bArm.armMotor1.getEncoderValue() < 740) {
 
-                v4bArm.extend(740);
+                    v4bArm.extend(740);
 
-            } else {
+                } else {
 
-                v4bArm.stop();
-                armGo1 = false;
-            }
+                     v4bArm.stop();
+                //armGo1 = false;
+                }
+
+
+
+           // armGo1 = true;
+
+
+
 
         }
+
+       // if(armGo1) {
+
+
+      //  }
 
 
         previousArmToggle2 = b;
@@ -487,9 +553,9 @@ public class Robot {
 
 
 
-            if (v4bArm.armMotor1.getEncoderValue() < 900) {
+            if (v4bArm.armMotor1.getEncoderValue() < 850) {
 
-                v4bArm.extend(900);
+                v4bArm.extend(850);
 
             }
 
@@ -510,7 +576,7 @@ public class Robot {
     public void armTop(boolean b){
 
 
-        if (b && previousArmToggle) {
+        if (b && previousArmToggle4) {
 
 
 
@@ -529,20 +595,21 @@ public class Robot {
 
         }
 
-        previousArmToggle = b;
+        previousArmToggle4 = b;
 
     }
 
     public void armRetract(boolean b){
 
 
-        if (b && previousArmToggle) {
+        if (b && previousArmToggle5) {
 
 
 
             if (v4bArm.armMotor1.getEncoderValue() > 0) {
 
-                v4bArm.reverse(1000);
+                //v4bArm.reverse(1000);
+                v4bArm.retract(0.9f);
 
             }
 
@@ -555,7 +622,7 @@ public class Robot {
 
         }
 
-        previousArmToggle = b;
+        previousArmToggle5 = b;
 
     }
 
@@ -566,7 +633,7 @@ public class Robot {
            if (armOn == 0){
                 if (v4bArm.armMotor1.getEncoderValue() < 755) {
                     //robot.v4bArm.work(0.5f,100);
-                    v4bArm.start(750);
+                    v4bArm.extend(750);
 
 
 
@@ -583,7 +650,7 @@ public class Robot {
 
 
             }
-            else if (armOn == 1 && b){
+           else if (armOn == 1 && b){
 
                 if (v4bArm.armMotor1.getEncoderValue() <950) {
                     //robot.v4bArm.work(0.5f,100);
@@ -600,7 +667,7 @@ public class Robot {
 
                 }
             }
-            else if (armOn ==2 && b){
+           else if (armOn ==2 && b){
                 if (v4bArm.armMotor1.getEncoderValue() < 1000) {
                     //robot.v4bArm.work(0.5f,100);
                     v4bArm.extend(30);
@@ -617,10 +684,7 @@ public class Robot {
 
                 }
             }
-            else{
 
-                v4bArm.stop();
-           }
         }
         previousArmToggle = b;
     }

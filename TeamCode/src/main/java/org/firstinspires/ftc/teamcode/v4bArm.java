@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.dashboard.config.Config;
 
 
-@Config
+//@Config
 
 public class v4bArm{
     public Motor armMotor1;
@@ -29,6 +29,10 @@ public class v4bArm{
     public double armMotor1Distance = 0.0;
     public double armMotor2Distance = 0.0;
 
+
+    private double K;
+    private double targetAngle;
+    private double armMotorFFg = Math.cos(targetAngle)*K;
     private double armMotorFF = 0.7;
     public double currentDistance = 0;
     public double currentDistance2 = 0;
@@ -38,6 +42,8 @@ public class v4bArm{
     boolean armShift = false;
     boolean reverse = false;
     boolean armMove = false;
+    boolean gravity = false;
+
 
 
     public v4bArm(Component armMotor1, Component armMotor2) {
@@ -48,9 +54,6 @@ public class v4bArm{
         armMotor2Distance = 1;
 
         lastTime = System.currentTimeMillis();
-
-
-
 
 
     }
@@ -84,9 +87,12 @@ public class v4bArm{
             armMotor1.setSpeed(((float) Range.clip(armMotor1Distance, -1, 1)*-1)*0.75f);
             armMotor2.setSpeed(((float) Range.clip(armMotor1Distance, -1, 1)*-1)*0.75f);
 
-
-
         }
+      /*  else if (gravity){
+            armMotor1.setSpeed(((float) Range.clip(armMotor1Distance, -1, 1)*-1)*0.60f);
+            armMotor2.setSpeed(((float) Range.clip(armMotor1Distance, -1, 1)*-1)*0.60f);*/
+
+        //}
         else {
             armMotor1.setSpeed(0);
             armMotor2.setSpeed(0);
@@ -110,11 +116,23 @@ public class v4bArm{
 
         reverse = true;
 
-        targetDistance = distance;
+       // targetDistance = distance;
 
 
 
     }
+
+    public void antiGravity(double distance){
+
+
+        gravity = true;
+
+        // targetDistance = distance;
+
+
+
+    }
+
 
     /*public void moveback(double distance){
 
@@ -190,6 +208,7 @@ public class v4bArm{
     public void extend(double distance){
 
 
+        armMove = true;
         armMotor1.setSpeed(1f);
         armMotor2.setSpeed(1f);
 
@@ -212,6 +231,8 @@ public class v4bArm{
     public void stop () {
         armShift =false;
         reverse = false;
+       //gravity = false;
+        armMove = false;
 
         armMotor1.setSpeed(0);
         armMotor2.setSpeed(0);
