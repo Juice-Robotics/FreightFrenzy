@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.acmerobotics.dashboard.config.Config;
+
+
+@Config
 
 public class v4bArm{
     public Motor armMotor1;
@@ -16,10 +21,10 @@ public class v4bArm{
 
     public double lastTarget = 5300;
 
-    final double KP = 0.0005, KI = 0.00, KD = 0.00;
+    public static double KP = 0.0005, KI = 0.00, KD = 0.00;
 
-    public static PIDController armPID;
-    public static PIDController armPID2;
+    public PIDController armPID;
+    public  PIDController armPID2;
 
     public double armMotor1Distance = 0.0;
     public double armMotor2Distance = 0.0;
@@ -31,6 +36,8 @@ public class v4bArm{
 
 
     boolean armShift = false;
+    boolean reverse = false;
+    boolean armMove = false;
 
 
     public v4bArm(Component armMotor1, Component armMotor2) {
@@ -41,6 +48,8 @@ public class v4bArm{
         armMotor2Distance = 1;
 
         lastTime = System.currentTimeMillis();
+
+
 
 
 
@@ -67,9 +76,18 @@ public class v4bArm{
         armMotor2Distance = correction2 + armMotorFF;
 
         if (armShift) {
-            armMotor1.setSpeed((float) Range.clip(armMotor1Distance, -1, 1));
-            armMotor2.setSpeed((float) Range.clip(armMotor1Distance, -1, 1));
-        } else {
+            armMotor1.setSpeed((float) Range.clip(armMotor1Distance, -1, 1)*0.45f);
+            armMotor2.setSpeed((float) Range.clip(armMotor1Distance, -1, 1)*0.45f);
+
+        }
+        else if (reverse){
+            armMotor1.setSpeed(((float) Range.clip(armMotor1Distance, -1, 1)*-1)*0.75f);
+            armMotor2.setSpeed(((float) Range.clip(armMotor1Distance, -1, 1)*-1)*0.75f);
+
+
+
+        }
+        else {
             armMotor1.setSpeed(0);
             armMotor2.setSpeed(0);
         }
@@ -82,6 +100,17 @@ public class v4bArm{
 
 
           armShift = true;
+
+
+
+    }
+
+    public void reverse(double distance){
+
+
+        reverse = true;
+
+        targetDistance = distance;
 
 
 
@@ -113,6 +142,8 @@ public class v4bArm{
     public void start (double distance) {
         armShift = true;
         targetDistance = distance;
+
+
         PIDController armPID = new PIDController(targetDistance, KP, KI, KD, false);
         PIDController armPID2 = new PIDController(targetDistance, KP, KI, KD, false);
 
@@ -130,7 +161,7 @@ public class v4bArm{
         armMotor2.setSpeed(speed);
 
     }
-    public void reverse () {
+     public void reverse () {
         armMotor1.setSpeed(-0.4f);
         armMotor2.setSpeed(-0.4f);
 
@@ -141,6 +172,7 @@ public class v4bArm{
     }
 
     public void enable(float speed){
+        armMove = true;
         armMotor1.setSpeed(speed);
         armMotor2.setSpeed(speed);
 
@@ -148,6 +180,7 @@ public class v4bArm{
     }
 
     public void brake(){
+        armMove = false;
         armMotor1.setSpeed(0);
         armMotor2.setSpeed(0);
 
@@ -155,12 +188,16 @@ public class v4bArm{
     }
 
     public void extend(double distance){
-        armMotor1.setSpeed(0.9f);
-        armMotor2.setSpeed(0.9f);
+
+
+        armMotor1.setSpeed(1f);
+        armMotor2.setSpeed(1f);
 
     }
 
     public void retract(float speed){
+
+        armMove = true;
         armMotor1.setSpeed(speed*-1);
         armMotor2.setSpeed(speed*-1);
         //start(-distance);
@@ -174,6 +211,8 @@ public class v4bArm{
     }
     public void stop () {
         armShift =false;
+        reverse = false;
+
         armMotor1.setSpeed(0);
         armMotor2.setSpeed(0);
 

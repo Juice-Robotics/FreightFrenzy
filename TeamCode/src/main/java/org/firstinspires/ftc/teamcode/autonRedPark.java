@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -28,7 +29,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.time.temporal.ValueRange;
 
 
-
+@Config
 
 @Autonomous(name="autonRedPark", group="Auton Opmode")
 public class autonRedPark extends LinearOpMode {
@@ -56,6 +57,11 @@ public class autonRedPark extends LinearOpMode {
     public float forwardVal = 0;
 
     public int go = 0;
+
+    boolean bottom = false;
+
+    public static PIDController armPIDdisplay = new PIDController(0,0,0,0,false);
+
 
 
 
@@ -106,6 +112,9 @@ public class autonRedPark extends LinearOpMode {
         robot.carousel.resetAllEncoders();
 
 
+
+
+
        /* dashboard.addConfigVariable("PIDController", "CarouselPID", spinmotorPID);
         dashboard.addConfigVariable("PIDController", "armPID", robot.v4bArm.armPID);
         dashboard.addConfigVariable("PIDController", "armPID2", robot.v4bArm.armPID2);*/
@@ -123,7 +132,7 @@ public class autonRedPark extends LinearOpMode {
 
 
 
-        if (depositLevel == 0) {
+    /*    if (depositLevel == 0) {
             forwardVal = 8;
             armVal = 755;
 
@@ -133,8 +142,13 @@ public class autonRedPark extends LinearOpMode {
         } else {
 
             forwardVal = 6;
-            armVal = 1060;
-        }
+            armVal = 1000;
+            bottom = false;
+        }*/
+
+        forwardVal = 5;
+
+        armVal = 755;
 
         waitForStart();
 
@@ -153,21 +167,27 @@ public class autonRedPark extends LinearOpMode {
 
                     .build();
 
-            TrajectorySequence planPart2 = robot.drive.trajectorySequenceBuilder(startPose).forward(forwardVal)
+            TrajectorySequence planPart2 = robot.drive.trajectorySequenceBuilder(startPose)
+                    .forward(forwardVal)
+
+                  //add marker to keep arm up
                     .build();
             TrajectorySequence planPart3 = robot.drive.trajectorySequenceBuilder(startPose)
                     .back(forwardVal)
                     .strafeLeft(46)
                     .build();
 
+            //og was 100
             TrajectorySequence turnPlease = robot.drive.trajectorySequenceBuilder(startPose)
-                    .turn(Math.toRadians(100))
+                    .turn(Math.toRadians(90))
                     .back(5)
                     .build();
 
 
             TrajectorySequence planPart4 = robot.drive.trajectorySequenceBuilder(startPose)
                     .strafeLeft(24)
+                    .turn(Math.toRadians(-10))
+                    .back(5)
                     .build();
 
 
@@ -182,35 +202,109 @@ public class autonRedPark extends LinearOpMode {
 
 
 
-
             if(go == 0){
 
                 // robot.drive.followTrajectorySequence(turnPlease);
+
+
+
                 robot.drive.followTrajectorySequence(currentPlan);
                 go=1;
             }
 
+
             else if (go == 1) {
-                if (robot.v4bArm.armMotor1.getEncoderValue() < 750) {
-                    //robot.v4bArm.work(0.5f,100);
-                    robot.v4bArm.start(550);
+
+                if(bottom) {
 
 
-                } else {
-                    go=2;
-                    robot.v4bArm.stop();
+                    if (robot.v4bArm.armMotor1.getEncoderValue() < 755) {
+                        //robot.v4bArm.work(0.5f,100);
+                        robot.v4bArm.start(755);
+
+
+                    } else {
+
+                        robot.v4bArm.stop();
+                        go = 2;
+
+                    }
+                }
+                else{
+
+                    robot.drive.followTrajectorySequence(planPart2);
+                    go = 2;
 
                 }
+
+
 
             }
 
             else if (go == 2) {
-                robot.drive.followTrajectorySequence(planPart2);
-                go=3;
+
+                if(bottom){
+                    robot.drive.followTrajectorySequence(planPart2);
+                    go=3;
+
+
+
+                }
+                else{
+
+                    if (robot.v4bArm.armMotor1.getEncoderValue() < 700) {
+                        //robot.v4bArm.work(0.5f,100);
+                        robot.v4bArm.start(700);
+
+
+                    } else {
+
+
+                        robot.v4bArm.stop();
+
+                        go=3;
+
+                    }
+
+                }
+
+
             }
 
             else if (go == 3) {
+
+
+                if ( (robot.v4bArm.armMotor1.getEncoderValue() > 700+10) && (robot.v4bArm.armMotor1.getEncoderValue() < 700-10) ){
+
+
+                    // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();
+
+
+                    robot.v4bArm.reverse(1000);
+
+                }
+                else {
+
+                    robot.v4bArm.stop();
+
+                }
+
+
+
+
                 robot.depositor.outTake();
+
+                /*if (robot.v4bArm.armMotor1.getEncoderValue() > 755){
+
+                    robot.v4bArm.reverse(10);
+
+                }
+                else {
+
+                    robot.v4bArm.stop();
+
+                }*/
+
                 go = 4;
             }
 
@@ -253,10 +347,69 @@ public class autonRedPark extends LinearOpMode {
                 robot.drive.followTrajectorySequence(planPart4);
                 go=7;
             }
+
+            else if (go == 7) {
+
+
+                robot.depositor.inTake();
+
+                /*if (robot.v4bArm.armMotor1.getEncoderValue() > 755){
+
+                    robot.v4bArm.reverse(10);
+
+                }
+                else {
+
+                    robot.v4bArm.stop();
+
+                }*/
+
+                go = 8;
+            }
+
+            else if (go == 8){
+
+              //  double currentDistance = robot.v4bArm.armMotor1.getEncoderValue();
+                if (robot.v4bArm.armMotor1.getEncoderValue() > 0){
+
+                    robot.v4bArm.reverse(100);
+                }
+
+                else {
+                    robot.v4bArm.stop();
+                    go = 9;
+                }
+
+
+
+            }
+
+           /* else if (robot.v4bArm.armShift==false && robot.v4bArm.armMove==false){
+
+
+
+                if (robot.v4bArm.armMotor1.getEncoderValue() > last){
+
+                    robot.v4bArm.reverse(1000);
+
+                }
+                else {
+
+                    robot.v4bArm.stop();
+
+                }
+
+            }*/
             else{
                 telemetry.addData("message", "AUTON FINISHED");
 
             }
+
+
+
+
+
+
 
 
         }

@@ -105,6 +105,8 @@ public class Robot {
     public boolean previousPrimeShooter = false;
     public boolean previousDepToggle = false;
     public boolean previousArmToggle = false;
+    public boolean previousArmToggle2 = false;
+    public boolean previousArmToggle3 = false;
     public boolean armEnabled= false;
     public boolean shooterPrimed = false;
     private boolean wobbleGoalClawOpen = false;
@@ -119,6 +121,11 @@ public class Robot {
     private boolean intakeOnForward = false;
     private boolean intakeOnReverse = false;
 
+    private boolean armPrimer = false;
+
+    private boolean armGo1 = false;
+    private boolean armGo2 = false;
+    private boolean armGo3 = false;
 
 
     ///public Pose2d startPose = new Pose2d(0, 0, 0);
@@ -207,7 +214,7 @@ public class Robot {
 
         if (x && !previousCarouselToggle){
             if (carouselOn == 0){
-                carousel.run(-0.2f);
+                carousel.run(-0.4f);
                 carouselOn = 1;
             }
             else if (carouselOn == 1 && x){
@@ -405,38 +412,171 @@ public class Robot {
             v4bArm.brake();
         }else {
             if (speedDown != 0.0){
-                v4bArm.retract(speedDown*0.45f);
+                v4bArm.retract(speedDown*0.75f);
             } else if (speedUp != 0.0){
-                v4bArm.enable(speedUp*0.45f);
+                v4bArm.enable(speedUp*0.75f);
             }
         }
+    }
+
+
+    public void primeShooter(boolean x) {
+        if (x && !previousPrimeShooter){
+            if (shooterPrimed){
+               // flywheel.stop();
+                v4bArm.stop();
+                shooterPrimed = false;
+            } else {
+
+
+
+                if (v4bArm.armMotor1.getEncoderValue() < 740) {
+
+                    v4bArm.extend(740);
+
+                } else {
+
+                    shooterPrimed = true;
+
+                }
+                //flywheel.moveWheels();
+
+            }
+        }
+
+        previousPrimeShooter = x;
+    }
+
+    public void armBottom(boolean b){
+
+
+
+        if (b && previousArmToggle2) {
+
+
+
+            armGo1 = true;
+
+
+
+
+        }
+
+        if(armGo1) {
+            if (v4bArm.armMotor1.getEncoderValue() < 740) {
+
+                v4bArm.extend(740);
+
+            } else {
+
+                v4bArm.stop();
+                armGo1 = false;
+            }
+
+        }
+
+
+        previousArmToggle2 = b;
+
+    }
+
+    public void armMiddle(boolean b){
+
+
+        if (b && previousArmToggle3) {
+
+
+
+            if (v4bArm.armMotor1.getEncoderValue() < 900) {
+
+                v4bArm.extend(900);
+
+            }
+
+            else{
+
+                v4bArm.stop();
+            }
+
+
+
+        }
+
+
+        previousArmToggle3 = b;
+
+    }
+
+    public void armTop(boolean b){
+
+
+        if (b && previousArmToggle) {
+
+
+
+            if (v4bArm.armMotor1.getEncoderValue() < 1000) {
+
+                    v4bArm.extend(1000);
+
+                }
+
+            else{
+
+                v4bArm.stop();
+            }
+
+
+
+        }
+
+        previousArmToggle = b;
+
+    }
+
+    public void armRetract(boolean b){
+
+
+        if (b && previousArmToggle) {
+
+
+
+            if (v4bArm.armMotor1.getEncoderValue() > 0) {
+
+                v4bArm.reverse(1000);
+
+            }
+
+            else{
+
+                v4bArm.stop();
+            }
+
+
+
+        }
+
+        previousArmToggle = b;
+
     }
 
     public void armPreset(boolean b){
 
 
-       /*if (b && !previousArmToggle){
+        if (b && !previousArmToggle){
            if (armOn == 0){
-                if (v4bArm.armMotor1.getEncoderValue() < 300) {
+                if (v4bArm.armMotor1.getEncoderValue() < 755) {
                     //robot.v4bArm.work(0.5f,100);
-                    v4bArm.start(300);
-                    armOn = 1;
+                    v4bArm.start(750);
+
+
+
                 }
 
-                else if (v4bArm.armMotor1.getEncoderValue() == 600){
-                    v4bArm.start(600);
-                    armOn = 1;
-                    }
 
-                else if (v4bArm.armMotor1.getEncoderValue() == 600){
-                    v4bArm.start(600);
-                    armOn = 1;
-                }
-
-                } else {
+               else {
 
                     v4bArm.stop();
-                    armOn = 0;
+                    armOn = 1;
 
 
                 }
@@ -445,12 +585,14 @@ public class Robot {
             }
             else if (armOn == 1 && b){
 
-                if (v4bArm.armMotor1.getEncoderValue() < 500) {
+                if (v4bArm.armMotor1.getEncoderValue() <950) {
                     //robot.v4bArm.work(0.5f,100);
-                    v4bArm.start(550);
+                    v4bArm.extend(30);
 
 
-                } else {
+
+                }
+                else {
 
                     v4bArm.stop();
                     armOn = 2;
@@ -459,21 +601,28 @@ public class Robot {
                 }
             }
             else if (armOn ==2 && b){
-                if (v4bArm.armMotor1.getEncoderValue() < 600) {
+                if (v4bArm.armMotor1.getEncoderValue() < 1000) {
                     //robot.v4bArm.work(0.5f,100);
-                    v4bArm.start(600);
+                    v4bArm.extend(30);
 
 
-                } else {
+
+                }
+                else {
 
                     v4bArm.stop();
                     armOn = 0;
 
 
+
                 }
             }
+            else{
+
+                v4bArm.stop();
+           }
         }
-        previousArmToggle = b;*/
+        previousArmToggle = b;
     }
 
 

@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode;
 public class Depositor {
     public StepperServo depositor;
 
+
+    // og values init 50, intake 25
+
     public int initialAngle = 50;
 
-    public int intakeAngle = 20;
+    public int intakeAngle = 34;
 
-    public int outakeAngle  = 5;
+    public int outakeAngle  = 0;
 
     /* arbitrary values for now */
     public int desiredAngle = 45;

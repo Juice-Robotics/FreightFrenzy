@@ -25,6 +25,8 @@ public class DriverControl extends LinearOpMode {
     public boolean armEnabled= false;
     int armOn = 0;
 
+    PIDController armPID3;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize your own robot class
@@ -48,6 +50,9 @@ public class DriverControl extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+
+
+
 
             robot.updateLoop();
             // Make sure to call myLocalizer.update() on *every* loop
@@ -80,54 +85,119 @@ public class DriverControl extends LinearOpMode {
             robot.toggleIntake(gamepad1.a);
             robot.intakeOn(gamepad1.right_trigger);
 
-             robot.intakeReverse(gamepad1.left_trigger);
+            robot.intakeReverse(gamepad1.left_trigger);
 
          //   robot.armOn(gamepad1.b);
 
           //  robot.toggleDeposit(gamepad1.b);
-            robot.toggleDeposit2(gamepad2.y);
+            robot.toggleDeposit2(gamepad1.y);
             robot.toggleCarousel(gamepad1.x);
 
            robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
 
-           robot.armPreset(gamepad2.b);
+         //  robot.armPreset(gamepad2.b);
+
+           robot.armBottom(gamepad1.dpad_left);
+           robot.armMiddle(gamepad1.dpad_down);
+           robot.armTop(gamepad1.dpad_right);
+           robot.armRetract(gamepad1.dpad_up);
 
 
-           telemetry.addData("armDistance", robot.v4bArm.armMotor1.getEncoderValue());
+           double last = robot.v4bArm.armMotor1.getEncoderValue();
+
+
            telemetry.addData("spinDistance", robot.carousel.carousel.getEncoderValue());
 
+           telemetry.addData("armDistance", robot.v4bArm.armMotor1.getEncoderValue());
+
+
+
+
            telemetry.addData("armOn", robot.armOn);
+
+
+         if (robot.v4bArm.armShift==false && robot.v4bArm.armMove==false){
+
+
+
+
+
+              if ( (robot.v4bArm.armMotor1.getEncoderValue() > last+10) && (robot.v4bArm.armMotor1.getEncoderValue() < last-10) ){
+
+
+                 // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();
+
+
+                  robot.v4bArm.reverse(1000);
+
+              }
+              else {
+
+                  robot.v4bArm.stop();
+
+              }
+
+          }
+
+
+
+          else if (robot.v4bArm.armMotor1.getEncoderValue() < 0){
+
+                    robot.v4bArm.resetAllEncoders();
+
+                }
+
             //intake Control
 
 
 
 
 
-          /*  if (gamepad2.b && !previousArmToggle){
+          /*  if (gamepad2.a && !previousArmToggle){
+
+
+
+           //     robot.v4bArm.resetAllEncoders();
+
+
                 if (armOn == 0){
                     if (robot.v4bArm.armMotor1.getEncoderValue() < 300) {
                         //robot.v4bArm.work(0.5f,100);
                         robot.v4bArm.start(300);
 
+                        telemetry.addData("message", "NOT THERE YET");
+
+
+                  ;
+
 
                     } else {
-                        armOn = 1;
+
+                        telemetry.addData("message", "THERE NOW");
+
                         robot.v4bArm.stop();
+
+                        armOn = 1;
 
 
                     }
 
                 }
-                else if (armOn == 1 && gamepad2.b){
+                else if (armOn == 1 && gamepad2.a){
 
                     if (robot.v4bArm.armMotor1.getEncoderValue() < 500) {
                         //robot.v4bArm.work(0.5f,100);
                         robot.v4bArm.start(550);
 
+                        telemetry.addData("message", "NOT THERE YET");
+
 
                     } else {
-                        armOn = 1;
+
+                        telemetry.addData("message", "THERE NOW");
+
                         robot.v4bArm.stop();
+                        armOn = 2;
 
 
                     }
@@ -137,45 +207,27 @@ public class DriverControl extends LinearOpMode {
 
 
                 }
-                else if (armOn ==2 && gamepad2.b){
+                else if (armOn ==2 && gamepad2.a){
                     if (robot.v4bArm.armMotor1.getEncoderValue() < 600) {
                         //robot.v4bArm.work(0.5f,100);
                         robot.v4bArm.start(600);
 
+                        telemetry.addData("message", "NOT THERE YET");
+
 
                     } else {
-                        armOn = 0;
+
+                        telemetry.addData("message", "THERE NOW");
+
                         robot.v4bArm.stop();
+                        armOn = 0;
 
 
                     }
                 }
             }
-            previousArmToggle = gamepad2.b;*/
+            previousArmToggle = gamepad2.a;*/
 
-
-
-
-
-
-
-            /*if(gamepad1.a && !changed) {
-                if(robot.intake.intakeServo1.getAngle() == 0){
-                    robot.intake.deploy();
-
-                }
-                else {robot.intake.retract();}
-                changed = true;
-            } else if(!gamepad1.a) {
-                changed = false;
-            }*/
-
-           /* robot.carouselOn(gamepad2.left_stick_y);
-
-
-            robot.armOn(gamepad2.right_stick_x);
-
-            robot.deposit(gamepad1.a);*/
 
 
 

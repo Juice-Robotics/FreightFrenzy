@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.Range;
 
+@Config
 public class Carousel {
 
     public Motor carousel;
-    public static double targetRPM;
+    public static double targetRPM = 0;
 
 
-    final double KP = 0.0005, KI = 0.00, KD = 0.00;
+    public static double KP = 0.0005, KI = 0.00, KD = 0.00;
     
     public static double currentRPM = 0;
 
@@ -26,7 +28,7 @@ public class Carousel {
     private double shooterFF = 0.7;
 
     public double spinTime;
-    public static PIDController spinmotorPID;
+    public PIDController spinmotorPID;
 
     public Carousel(Component carouselMotor){
 
@@ -85,7 +87,7 @@ public class Carousel {
 
 
         if (spinmotor){
-            carousel.setSpeed((float) Range.clip(carouselSpeed, -1, 1));
+            carousel.setSpeed((float) Range.clip(carouselSpeed, -1, 1)*0.55f);
 
         } else {
             carousel.setSpeed(0);

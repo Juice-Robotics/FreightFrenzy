@@ -78,7 +78,12 @@ public class redDriverControl extends LinearOpMode {
             robot.toggleDeposit2(gamepad2.y);
             robot.toggleRedCarousel(gamepad1.x);
 
+            robot.armPreset(gamepad2.b);
+
             robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
+
+
+
 
 
          /*   if (gamepad1.b && !previousArmToggle){
