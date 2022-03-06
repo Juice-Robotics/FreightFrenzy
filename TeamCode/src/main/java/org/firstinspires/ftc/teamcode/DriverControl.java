@@ -27,6 +27,9 @@ public class DriverControl extends LinearOpMode {
     private boolean intakeOnForward = false;
     private boolean intakeOnReverse = false;
     int armOn = 0;
+    double x;
+    double y;
+    double rx;
 
     PIDController armPID3;
 
@@ -89,14 +92,14 @@ public class DriverControl extends LinearOpMode {
             // Teleop driving part
             // Mecanum example code from gm0
             // https://gm0.org/en/stable/docs/software/mecanum-drive.html
-            double x = gamepad1.left_stick_x;
+         /*   double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
-            double rx = gamepad1.right_stick_x;
+            double rx = gamepad1.right_stick_x;*/
 
             robot.toggleIntake(gamepad1.a);
             robot.intakeOn(gamepad1.right_trigger,startTime);
 
-            robot.intakeReverse(gamepad1.left_trigger);
+            //robot.intakeReverse(gamepad1.left_trigger);
 
          //   robot.armOn(gamepad1.b);
 
@@ -156,6 +159,21 @@ public class DriverControl extends LinearOpMode {
                 intakeOnForward = false;
                 // }
             }*/
+
+
+            if (gamepad1.left_trigger >= 0.5f){
+                x = gamepad1.left_stick_x*0.45;
+                y = -gamepad1.left_stick_y*0.45;
+                rx = gamepad1.right_stick_x*0.45;
+
+            } else{
+
+                 x = gamepad1.left_stick_x;
+                 y = -gamepad1.left_stick_y;
+                 rx = gamepad1.right_stick_x;
+
+
+            }
             if (robot.v4bArm.armShift==false && robot.v4bArm.armMove==false){
 
                 //if ( robot.v4bArm.armMotor1.getEncoderValue() > last ){
