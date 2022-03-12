@@ -79,8 +79,11 @@ public class v4bArm{
         armMotor2Distance = correction2 + armMotorFF;
 
         if (armShift) {
-            armMotor1.setSpeed((float) Range.clip(armMotor1Distance, -1, 1)*0.45f);
-            armMotor2.setSpeed((float) Range.clip(armMotor1Distance, -1, 1)*0.45f);
+
+            //0.45
+            //0.3
+            armMotor1.setSpeed((float) Range.clip(armMotor1Distance, -1, 1)*0.35f);
+            armMotor2.setSpeed((float) Range.clip(armMotor1Distance, -1, 1)*0.35f);
 
         }
         else if (reverse){

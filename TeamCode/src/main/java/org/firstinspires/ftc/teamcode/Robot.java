@@ -120,6 +120,7 @@ public class Robot {
 
     private int depOn = 0;
     public int armOn = 0;
+    private int rev= 0;
     private boolean shouldLower = true;
     private boolean intakeOnForward = false;
     private boolean intakeOnReverse = false;
@@ -131,6 +132,10 @@ public class Robot {
     private boolean armGo2 = false;
     private boolean armGo3 = false;
     private int i = 0;
+
+    public boolean reverse = false;
+    private boolean reverseToggle = false;
+
 
 
 
@@ -145,10 +150,13 @@ public class Robot {
         this.drive = new SampleMecanumDrive(map);
 
         this.components = new Component[]{
+
+
                 new Motor(3, "backLeft", map, true),                            //0 left odometer
                 new Motor(2, "backRight", map, false),                          //1 right odometer
                 new Motor(1, "frontLeft", map, true),                           //2 middle odometer
-                new Motor(0, "frontRight", map, false),                         //3
+                new Motor(0, "frontRight", map, false),
+                //3
                 new Motor(1, "carouselSpinner", map, true),                     //4
                 new Motor(2, "leftArm", map, true),                             //5
                 new Motor(3, "rightArm", map, false),                           //6
@@ -222,12 +230,12 @@ public class Robot {
 
         if (x && !previousCarouselToggle){
             if (carouselOn == 0){
-                carousel.run(-0.4f);
+                carousel.run(-0.2f);
                 carouselOn = 1;
             }
             else if (carouselOn == 1 && x){
 
-                carousel.turbo(-0.7f);
+                carousel.turbo(-0.2f);
                 carouselOn = 2;
 
 
@@ -243,17 +251,45 @@ public class Robot {
 
     }
 
+    public void reverseDriveTrain(boolean x) {
+
+        if (x && reverseToggle){
+
+            if (rev == 0){
+
+                reverse = true;
+                rev = 1;
+
+
+            }
+
+            else if (rev == 1 && x){
+
+                reverse = false;
+                rev = 0;
+            }
+
+
+
+        }
+
+        reverseToggle = x;
+        //intake Control
+
+
+    }
+
 
     public void toggleRedCarousel(boolean x) {
 
         if (x && !previousCarouselToggle){
             if (carouselOn == 0){
-                carousel.run(0.4f);
+                carousel.run(0.2f);
                 carouselOn = 1;
             }
             else if (carouselOn == 1 && x){
 
-                carousel.turbo(0.7f);
+                carousel.turbo(0.3f);
                 carouselOn = 2;
 
 
@@ -285,6 +321,8 @@ public class Robot {
 
 
         if (val >= 0.5f){
+
+
             intake.start();
             intakeOnForward = true;
             intakeRetract = true;
@@ -302,7 +340,7 @@ public class Robot {
 
             intake.reverse();
 
-            Thread.sleep(1000);
+            Thread.sleep(250);
 
                /* if(System.currentTimeMillis()-starTime> 2000){
 
@@ -311,7 +349,7 @@ public class Robot {
 
                 }*/
 
-
+            intake.retract();
             intake.stop();
 
             i= 0;

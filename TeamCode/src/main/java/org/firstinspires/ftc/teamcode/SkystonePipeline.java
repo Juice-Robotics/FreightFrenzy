@@ -46,10 +46,14 @@ public class SkystonePipeline extends OpenCvPipeline {
             new Point(280, 35));
 
 
-    static final Rect D = new Rect(30,120,100,100);
+  //  30
+
+    //450
+
+    static final Rect D = new Rect(0,120,100,100);
     static final Rect E = new Rect(240,120,100,100);
 
-    static final Rect F = new Rect(450,120,100,100);
+    static final Rect F = new Rect(520,120,100,100);
 
 
 
@@ -84,11 +88,11 @@ public class SkystonePipeline extends OpenCvPipeline {
         telemetry.addData("Center percentage", Math.round(centerValue * 100) + "%");
         telemetry.addData("Right percentage", Math.round(rightValue * 100) + "%");
 
-        if (leftValue > 0.1){
-            location = Location.LEFT;
-            telemetry.addData("Skystone Location", "left");
+        if (rightValue > 0.1){
+            location = Location.RIGHT;
+            telemetry.addData("Skystone Location", "right");
 
-            position = 0;
+            position = 2;
         }
         else if (centerValue > 0.1){
             location = Location.CENTER;
@@ -96,9 +100,9 @@ public class SkystonePipeline extends OpenCvPipeline {
             position = 1;
         }
         else {
-            location = Location.RIGHT;
-            telemetry.addData("Skystone Location", "right");
-            position = 2;
+            location = Location.LEFT;
+            telemetry.addData("Skystone Location", "left");
+            position = 0;
         }
 
        /* boolean stoneLeft = leftValue > PERCENT_COLOR_THRESHOLD;

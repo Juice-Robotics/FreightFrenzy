@@ -137,18 +137,26 @@ public class autonRedPark extends LinearOpMode {
 
 
 
-       if (depositLevel == 0) {
-            forwardVal = 5;
-            armVal = 755;
+        //755, 850
+
+
+        //9, 7, 8
+        //7,7, 9
+        if (depositLevel == 2) {
+
+            forwardVal = 7;
+            armVal = 975;
+            bottom = true;
 
         } else if (depositLevel == 1) {
-            forwardVal = 2;
-            armVal = 950;
+            forwardVal = 6;
+            armVal = 790;
         } else {
 
-            forwardVal = 3;
-            armVal = 1000;
-            bottom = true;
+
+            forwardVal = 9;
+            armVal = 685;
+
         }
 
       //  forwardVal = 5;
@@ -161,20 +169,22 @@ public class autonRedPark extends LinearOpMode {
 
         telemetry.addData("Positon", depositLevel);
 
-        if (depositLevel == 0) {
-            forwardVal = 5;
-            armVal = 700;
+        if (depositLevel == 2) {
+
+            forwardVal = 7;
+            armVal = 975;
+            bottom = true;
 
         } else if (depositLevel == 1) {
-            forwardVal = 3;
-            armVal = 850;
+            forwardVal = 6;
+            armVal = 790;
         } else {
 
-            forwardVal = 3;
-            armVal = 1000;
-            bottom = true;
-        }
 
+            forwardVal = 9;
+            armVal = 685;
+
+        }
         if (isStopRequested()) return;
 
 
@@ -196,21 +206,23 @@ public class autonRedPark extends LinearOpMode {
                   //add marker to keep arm up
                     .build();
             TrajectorySequence planPart3 = robot.drive.trajectorySequenceBuilder(startPose)
-                    .back(forwardVal)
-                    .strafeLeft(46)
+                    .waitSeconds(2)
+                    .back(forwardVal-1)
+                    .strafeLeft(53)
                     .build();
 
             //og was 100
             TrajectorySequence turnPlease = robot.drive.trajectorySequenceBuilder(startPose)
-                    .turn(Math.toRadians(90))
-                    .back(5)
+                    .turn(Math.toRadians(-90))
+                    .back(6)
                     .build();
 
 
             TrajectorySequence planPart4 = robot.drive.trajectorySequenceBuilder(startPose)
-                    .strafeLeft(24)
-                    .turn(Math.toRadians(-10))
-                    .back(5)
+                   // .strafeLeft(24)
+                    .forward(12)
+                    .turn(Math.toRadians(-15))
+                    .strafeLeft(4)
                     .build();
 
 
@@ -302,7 +314,7 @@ public class autonRedPark extends LinearOpMode {
 
 
                 if ( (robot.v4bArm.armMotor1.getEncoderValue() > armVal+10) && (robot.v4bArm.armMotor1.getEncoderValue() < armVal-10) ){
-                //if ( robot.v4bArm.armMotor1.getEncoderValue() > armVal){
+               // if ( robot.v4bArm.armMotor1.getEncoderValue() > armVal){
 
 
                     // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();
@@ -342,7 +354,7 @@ public class autonRedPark extends LinearOpMode {
 
                 robot.drive.followTrajectorySequence(planPart3);
 
-                robot.drive.followTrajectorySequence(turnPlease);
+               // robot.drive.followTrajectorySequence(turnPlease);
 
                 go=5;
             }
@@ -351,9 +363,9 @@ public class autonRedPark extends LinearOpMode {
 
             else if (go == 5) {
 
-                if (robot.carousel.carousel.getEncoderValue() > -500) {
+                if (robot.carousel.carousel.getEncoderValue() < 600) {
 
-                    robot.carousel.start(-3000);
+                    robot.carousel.start(3000);
 
 
 

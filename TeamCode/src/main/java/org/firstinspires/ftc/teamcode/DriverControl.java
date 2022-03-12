@@ -26,6 +26,8 @@ public class DriverControl extends LinearOpMode {
     private boolean intakeRetract = false;
     private boolean intakeOnForward = false;
     private boolean intakeOnReverse = false;
+    private boolean reverseToggle = false;
+   // private boolean reverse = false;
     int armOn = 0;
     double x;
     double y;
@@ -49,7 +51,7 @@ public class DriverControl extends LinearOpMode {
 
 
         robot.v4bArm.resetAllEncoders();
-        //robot.carousel.resetAllEncoders();
+        robot.carousel.resetAllEncoders();
 
 
 
@@ -115,6 +117,8 @@ public class DriverControl extends LinearOpMode {
            robot.armTop(gamepad1.dpad_right);
            robot.armRetract(gamepad1.dpad_down);
 
+           robot.reverseDriveTrain(gamepad1.right_bumper);
+
 
            double last = robot.v4bArm.armMotor1.getEncoderValue();
 
@@ -162,18 +166,37 @@ public class DriverControl extends LinearOpMode {
 
 
             if (gamepad1.left_trigger >= 0.5f){
-                x = gamepad1.left_stick_x*0.45;
-                y = -gamepad1.left_stick_y*0.45;
-                rx = gamepad1.right_stick_x*0.45;
+                x = -gamepad1.left_stick_x*0.25;
+                y = -gamepad1.left_stick_y*0.25;
+                rx = gamepad1.right_stick_x*0.25;
 
             } else{
 
-                 x = gamepad1.left_stick_x;
-                 y = -gamepad1.left_stick_y;
-                 rx = gamepad1.right_stick_x;
+
+                if(robot.reverse){
+
+                    x = gamepad1.left_stick_x;
+                    y = gamepad1.left_stick_y;
+                    rx = gamepad1.right_stick_x;
+
+                }
+                else{
+
+                    x = -gamepad1.left_stick_x;
+                    y = -gamepad1.left_stick_y;
+                    rx = gamepad1.right_stick_x;
+
+                }
+
 
 
             }
+
+
+
+            //sreverseToggle = gamepad1.right_bumper;
+
+
             if (robot.v4bArm.armShift==false && robot.v4bArm.armMove==false){
 
                 //if ( robot.v4bArm.armMotor1.getEncoderValue() > last ){

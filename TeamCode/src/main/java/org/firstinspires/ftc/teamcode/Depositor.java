@@ -8,9 +8,11 @@ public class Depositor {
 
     public int initialAngle = 50;
 
-    public int intakeAngle = 34;
 
-    public int outakeAngle  = 0;
+    //34
+    public int intakeAngle = 37;
+
+    public int outakeAngle  = -35;
 
     /* arbitrary values for now */
     public int desiredAngle = 45;
