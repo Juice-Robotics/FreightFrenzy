@@ -6,11 +6,14 @@ public class Depositor {
 
     // og values init 50, intake 25
 
-    public int initialAngle = 50;
+    //50
+    public int initialAngle = 65;
 
 
     //34
-    public int intakeAngle = 37;
+
+    //37
+    public int intakeAngle = 45;
 
     public int outakeAngle  = -35;
 

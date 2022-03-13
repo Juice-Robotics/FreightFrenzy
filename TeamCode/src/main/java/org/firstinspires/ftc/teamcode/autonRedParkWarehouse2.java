@@ -17,8 +17,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Config
 
-@Autonomous(name="warehousePark", group="Auton Opmode")
-public class warehousePark extends LinearOpMode {
+@Autonomous(name="autonRedParkWarehouse2", group="Auton Opmode")
+public class autonRedParkWarehouse2 extends LinearOpMode {
 
     Robot robot;
 
@@ -94,7 +94,7 @@ public class warehousePark extends LinearOpMode {
 
         telemetry.addData("Positon", depositLevel);
 
-       // webcam.stopStreaming();
+        // webcam.stopStreaming();
 
 
 
@@ -127,23 +127,26 @@ public class warehousePark extends LinearOpMode {
 
 
         //9, 7, 8
-       if (depositLevel == 0) {
-            forwardVal = 9;
-            armVal = 700;
+        if (depositLevel == 2) {
+
+            forwardVal = 7;
+            armVal = 975;
+            bottom = true;
 
         } else if (depositLevel == 1) {
-            forwardVal = 7;
+            forwardVal = 6;
             armVal = 790;
         } else {
 
-            forwardVal = 8;
-            armVal = 970;
-            bottom = true;
+
+            forwardVal = 9;
+            armVal = 685;
+
         }
 
-      //  forwardVal = 5;
+        //  forwardVal = 5;
 
-      //  armVal = 850;
+        //  armVal = 850;
 
         waitForStart();
 
@@ -151,18 +154,21 @@ public class warehousePark extends LinearOpMode {
 
         telemetry.addData("Positon", depositLevel);
 
-        if (depositLevel == 0) {
-            forwardVal = 9;
-            armVal = 700;
+        if (depositLevel == 2) {
+
+            forwardVal = 7;
+            armVal = 975;
+            bottom = true;
 
         } else if (depositLevel == 1) {
-            forwardVal = 7;
+            forwardVal = 6;
             armVal = 790;
         } else {
 
-            forwardVal = 8;
-            armVal = 970;
-            bottom = true;
+
+            forwardVal = 9;
+            armVal = 685;
+
         }
 
         if (isStopRequested()) return;
@@ -176,36 +182,56 @@ public class warehousePark extends LinearOpMode {
                     //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
                     /* .splineTo(new Vector2d(10, 48), Math.toRadians(0))
                      .splineTo(new Vector2d(10, 36), Math.toRadians(90))*/
-                    .strafeRight(30)
+                    .waitSeconds(5)
+                    .strafeLeft(30)
 
                     .build();
 
             TrajectorySequence planPart2 = robot.drive.trajectorySequenceBuilder(startPose)
                     .forward(forwardVal)
 
-                  //add marker to keep arm up
+                    //add marker to keep arm up
                     .build();
             TrajectorySequence planPart3 = robot.drive.trajectorySequenceBuilder(startPose)
-                    .waitSeconds(2)
-                    .back(forwardVal-1)
-                  //  .strafeLeft(30)
+                    .waitSeconds(1.5)
+                    .back(forwardVal)
+                    .addTemporalMarker(1.5, () -> {
+                // This marker runs two seconds into the trajectory
+
+                // Run your action in here!
+
+                        robot.depositor.inTake();
+
+                        if (robot.v4bArm.armMotor1.getEncoderValue() > 50){
+
+                            robot.v4bArm.reverse(100);
+                        }
+
+                        else {
+                            robot.v4bArm.stop();
+
+                        }
+
+
+
+                     })
+
+                    //.strafeRight(44)*/
                     .build();
 
             //og was 100
             TrajectorySequence turnPlease = robot.drive.trajectorySequenceBuilder(startPose)
-                   // .turn(Math.toRadians(90))
-                   // .back(6)
+                    .turn(Math.toRadians(90))
+                    .strafeLeft(12)
+                    //.back(6)
+                    .back(34)
                     .build();
 
 
             TrajectorySequence planPart4 = robot.drive.trajectorySequenceBuilder(startPose)
-                    //.strafeLeft(30)
-                    .turn(Math.toRadians(90))
-                    .forward(44)
-                    /*.back(6)
-                    .strafeRight(24)
+                    .strafeLeft(28)
                     .turn(Math.toRadians(-15))
-                    .back(4)*/
+                    .back(4)
                     .build();
 
 
@@ -220,7 +246,8 @@ public class warehousePark extends LinearOpMode {
 
 
 
-            //sleep(5);
+
+
 
             if(go == 0){
 
@@ -297,7 +324,7 @@ public class warehousePark extends LinearOpMode {
 
 
                 if ( (robot.v4bArm.armMotor1.getEncoderValue() > armVal+10) && (robot.v4bArm.armMotor1.getEncoderValue() < armVal-10) ){
-               // if ( robot.v4bArm.armMotor1.getEncoderValue() > armVal){
+                    // if ( robot.v4bArm.armMotor1.getEncoderValue() > armVal){
 
 
                     // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();
@@ -337,13 +364,42 @@ public class warehousePark extends LinearOpMode {
 
                 robot.drive.followTrajectorySequence(planPart3);
 
-               // robot.drive.followTrajectorySequence(turnPlease);
+            //    robot.drive.followTrajectorySequence(turnPlease);
 
                 go=5;
             }
 
 
+
+         /*   else if (go == 5) {
+
+                if (robot.carousel.carousel.getEncoderValue() > -600) {
+
+                    robot.carousel.start(-3000);
+
+
+
+
+
+                }
+                else {
+                    go=6;
+                    robot.carousel.stop();
+                }
+
+
+
+            }*/
+
+
+
             else if (go == 5) {
+               // robot.drive.followTrajectorySequence(planPart4);
+                robot.drive.followTrajectorySequence(turnPlease);
+                go=6;
+            }
+
+           /* else if (go == 7) {
 
 
                 robot.depositor.inTake();
@@ -359,12 +415,12 @@ public class warehousePark extends LinearOpMode {
 
                 }*/
 
-                go = 6;
+           /*     go = 8;
             }
 
-            else if (go == 6){
+            else if (go == 8){
 
-              //  double currentDistance = robot.v4bArm.armMotor1.getEncoderValue();
+                //  double currentDistance = robot.v4bArm.armMotor1.getEncoderValue();
                 if (robot.v4bArm.armMotor1.getEncoderValue() > 0){
 
                     robot.v4bArm.reverse(100);
@@ -372,18 +428,12 @@ public class warehousePark extends LinearOpMode {
 
                 else {
                     robot.v4bArm.stop();
-                    go = 7;
+                    go = 9;
                 }
 
 
 
             }
-
-            else if (go == 6) {
-                robot.drive.followTrajectorySequence(planPart4);
-                go=7;
-            }
-
 
            /* else if (robot.v4bArm.armShift==false && robot.v4bArm.armMove==false){
 

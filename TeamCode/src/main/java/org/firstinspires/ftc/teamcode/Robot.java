@@ -128,9 +128,11 @@ public class Robot {
 
     private boolean armPrimer = false;
 
-    private boolean armGo1 = false;
-    private boolean armGo2 = false;
-    private boolean armGo3 = false;
+    public boolean armGo1 = false;
+    public boolean armGo2 = false;
+    public boolean armGo3 = false;
+    public boolean armGoR= false;
+
     private int i = 0;
 
     public boolean reverse = false;
@@ -230,17 +232,11 @@ public class Robot {
 
         if (x && !previousCarouselToggle){
             if (carouselOn == 0){
-                carousel.run(-0.2f);
+                carousel.run(-0.25f);
                 carouselOn = 1;
             }
-            else if (carouselOn == 1 && x){
 
-                carousel.turbo(-0.2f);
-                carouselOn = 2;
-
-
-            }
-            else if (carouselOn ==2 && x){
+            else if (carouselOn ==1 && x){
                 carousel.shut();
                 carouselOn = 0;
             }
@@ -284,17 +280,11 @@ public class Robot {
 
         if (x && !previousCarouselToggle){
             if (carouselOn == 0){
-                carousel.run(0.2f);
+                carousel.run(0.25f);
                 carouselOn = 1;
             }
-            else if (carouselOn == 1 && x){
 
-                carousel.turbo(0.3f);
-                carouselOn = 2;
-
-
-            }
-            else if (carouselOn ==2 && x){
+            else if (carouselOn ==1 && x){
                 carousel.shut();
                 carouselOn = 0;
             }
@@ -555,29 +545,28 @@ public class Robot {
 
         if (b && previousArmToggle2) {
 
-            if (v4bArm.armMotor1.getEncoderValue() < 740) {
+
+
+
+             /*   if (v4bArm.armMotor1.getEncoderValue() < 740) {
 
                     v4bArm.extend(740);
 
                 } else {
 
-                     v4bArm.stop();
-                //armGo1 = false;
-                }
+                    v4bArm.stop();
 
+                }*/
 
-
-           // armGo1 = true;
-
-
-
+            armGo1 = true;
 
         }
 
-       // if(armGo1) {
 
 
-      //  }
+
+
+
 
 
         previousArmToggle2 = b;
@@ -590,8 +579,7 @@ public class Robot {
         if (b && previousArmToggle3) {
 
 
-
-            if (v4bArm.armMotor1.getEncoderValue() < 850) {
+            /*if (v4bArm.armMotor1.getEncoderValue() < 850) {
 
                 v4bArm.extend(850);
 
@@ -600,7 +588,13 @@ public class Robot {
             else{
 
                 v4bArm.stop();
-            }
+            }*/
+
+
+            armGo2 = true;
+
+
+
 
 
 
@@ -614,11 +608,11 @@ public class Robot {
     public void armTop(boolean b){
 
 
-        if (b && previousArmToggle4) {
+       if (b && previousArmToggle4) {
 
 
 
-            if (v4bArm.armMotor1.getEncoderValue() < 1000) {
+          /*  if (v4bArm.armMotor1.getEncoderValue() < 1000) {
 
                     v4bArm.extend(1000);
 
@@ -627,7 +621,9 @@ public class Robot {
             else{
 
                 v4bArm.stop();
-            }
+            }*/
+
+            armGo3 = true;
 
 
 
@@ -644,7 +640,9 @@ public class Robot {
 
 
 
-            if (v4bArm.armMotor1.getEncoderValue() > 0) {
+
+
+           /* if (v4bArm.armMotor1.getEncoderValue() > 0) {
 
                 //v4bArm.reverse(1000);
                 v4bArm.retract(0.9f);
@@ -654,7 +652,9 @@ public class Robot {
             else{
 
                 v4bArm.stop();
-            }
+            }*/
+
+            armGoR = true;
 
 
 

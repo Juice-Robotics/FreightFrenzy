@@ -109,7 +109,7 @@ public class DriverControl extends LinearOpMode {
             robot.toggleDeposit2(gamepad1.y);
             robot.toggleCarousel(gamepad1.x);
 
-           robot.moveLift(gamepad2.left_trigger, gamepad2.right_trigger);
+           robot.moveLift(gamepad2.left_trigger*0.5f, gamepad2.right_trigger*0.5f);
 
          //  robot.armPreset(gamepad2
            robot.armBottom(gamepad1.left_bumper);
@@ -164,6 +164,70 @@ public class DriverControl extends LinearOpMode {
                 // }
             }*/
 
+
+            if (robot.armGo1){
+
+                if (robot.v4bArm.armMotor1.getEncoderValue() < 740) {
+
+                    robot.v4bArm.extend(740);
+
+                } else {
+
+                    robot.v4bArm.stop();
+                    robot.armGo1 = false;
+
+                }
+
+
+            }
+
+
+           else if (robot.armGo2) {
+
+                if (robot.v4bArm.armMotor1.getEncoderValue() < 850) {
+
+                    robot.v4bArm.extend(850);
+
+                } else {
+
+                    robot.v4bArm.stop();
+                    robot.armGo2 = false;
+                }
+
+            }
+
+            else if (robot.armGo3) {
+
+                if (robot.v4bArm.armMotor1.getEncoderValue() < 1000) {
+
+                    robot.v4bArm.extend(1000);
+
+                } else {
+
+                    robot.v4bArm.stop();
+                    robot.armGo3 = false;
+
+                }
+
+            }
+
+            else if (robot.armGoR) {
+
+                if (robot.v4bArm.armMotor1.getEncoderValue() > 0) {
+
+                    //v4bArm.reverse(1000);
+                    robot.v4bArm.retract(0.9f);
+
+                }
+
+                else{
+
+                    robot.v4bArm.stop();
+                    robot.armGoR = false;
+
+                }
+
+            }
 
             if (gamepad1.left_trigger >= 0.5f){
                 x = -gamepad1.left_stick_x*0.25;

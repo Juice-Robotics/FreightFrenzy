@@ -196,6 +196,7 @@ public class autonRedPark extends LinearOpMode {
                     //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
                     /* .splineTo(new Vector2d(10, 48), Math.toRadians(0))
                      .splineTo(new Vector2d(10, 36), Math.toRadians(90))*/
+                    .waitSeconds(5)
                     .strafeRight(30)
 
                     .build();
@@ -238,6 +239,8 @@ public class autonRedPark extends LinearOpMode {
 
 
             //sleep(5);
+
+
 
             if(go == 0){
 

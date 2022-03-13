@@ -4,35 +4,22 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.Robot;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.time.temporal.ValueRange;
-
 
 @Config
 
-@Autonomous(name="autonBluePark", group="Auton Opmode")
-public class autonBluePark extends LinearOpMode {
+@Autonomous(name="autonBlueParkSplinePath2", group="Auton Opmode")
+public class autonBlueParkSplinePath2 extends LinearOpMode {
 
     Robot robot;
 
@@ -57,6 +44,7 @@ public class autonBluePark extends LinearOpMode {
     public float forwardVal = 0;
 
     public int go = 0;
+    public int move = 0;
 
     boolean bottom = false;
 
@@ -125,7 +113,7 @@ public class autonBluePark extends LinearOpMode {
         dashboard.addConfigVariable("PIDController", "armPID2", robot.v4bArm.armPID2);*/
 
 
-        robot.drive.setPoseEstimate(startPose);
+      //  robot.drive.setPoseEstimate(startPose);
 
 
         robot.updateLoop();
@@ -148,7 +136,7 @@ public class autonBluePark extends LinearOpMode {
             bottom = true;
 
         } else if (depositLevel == 1) {
-            forwardVal = 7;
+            forwardVal = 6;
             armVal = 790;
         } else {
 
@@ -170,19 +158,18 @@ public class autonBluePark extends LinearOpMode {
 
         if (depositLevel == 2) {
 
-            forwardVal = 7;
+            forwardVal = 0;
             armVal = 975;
             bottom = true;
 
-            //6
         } else if (depositLevel == 1) {
-            forwardVal = 7;
+            forwardVal = 2;
             armVal = 790;
         } else {
 
 
-            forwardVal = 9;
-            armVal = 675;
+            forwardVal = 3;
+            armVal = 685;
 
         }
 
@@ -197,8 +184,6 @@ public class autonBluePark extends LinearOpMode {
                     //.splineTo(new Vector2d(-10, -65), Math.toRadians(-90))
                     /* .splineTo(new Vector2d(10, 48), Math.toRadians(0))
                      .splineTo(new Vector2d(10, 36), Math.toRadians(90))*/
-
-                    .waitSeconds(5)
                     .strafeLeft(30)
 
                     .build();
@@ -211,11 +196,12 @@ public class autonBluePark extends LinearOpMode {
             TrajectorySequence planPart3 = robot.drive.trajectorySequenceBuilder(startPose)
                     .waitSeconds(1)
 
-                    .addTemporalMarker(1, () -> {
+                    .addTemporalMarker(0, () -> {
                 // This marker runs two seconds into the trajectory
 
                 // Run your action in here!
 
+                        robot.depositor.inTake();
 
                         if (robot.v4bArm.armMotor1.getEncoderValue() > 50){
 
@@ -227,12 +213,9 @@ public class autonBluePark extends LinearOpMode {
 
                         }
 
-                        robot.depositor.inTake();
 
 
-
-
-                    })
+                     })
                     .back(forwardVal-1)
                     .strafeRight(44)
                     .build();
@@ -251,6 +234,214 @@ public class autonBluePark extends LinearOpMode {
                     .build();
 
 
+            //49
+
+            Pose2d start= new Pose2d(-31, 58, Math.toRadians(-90));
+
+            robot.drive.setPoseEstimate(start);
+
+            TrajectorySequence planPart5 = robot.drive.trajectorySequenceBuilder(start)
+                    //.splineTo(new Vector2d(-24, 44+forwardVal), Math.toRadians(-90))
+
+                    .splineTo(new Vector2d(-37, 36), Math.toRadians(-90))
+
+                    .splineTo(new Vector2d(-28, 36), Math.toRadians(0))
+
+
+                   // .splineTo(new Vector2d(-24, 44+forwardVal), Math.toRadians(-90))
+                    //.turn(Math.toRadians(25))
+                    /*.addDisplacementMarker(() -> {
+
+                        //og 755
+
+                        if (move == 0) {
+
+
+                            if (robot.v4bArm.armMotor1.getEncoderValue() < armVal) {
+                                //robot.v4bArm.work(0.5f,100);
+                                robot.v4bArm.start(armVal);
+
+
+                            } else {
+
+                                robot.v4bArm.stop();
+                                //  go = 2;
+
+                            }
+                            move = 1;
+                        }
+
+
+                        // This marker runs after the first splineTo()
+
+                        // Run your action in here!
+                    })
+                    .waitSeconds(3)
+
+                    .addDisplacementMarker(()->{
+
+                        if ( move == 1) {
+
+                            if ((robot.v4bArm.armMotor1.getEncoderValue() > armVal + 10) && (robot.v4bArm.armMotor1.getEncoderValue() < armVal - 10)) {
+                                // if ( robot.v4bArm.armMotor1.getEncoderValue() > armVal){
+
+
+                                // double difference = last-robot.v4bArm.armMotor1.getEncoderValue();
+
+
+                                robot.v4bArm.reverse(1000);
+
+                            } else {
+
+                                robot.v4bArm.stop();
+
+                            }
+
+
+                            robot.depositor.outTake();
+
+                            move = 2;
+
+                        }
+
+
+
+                    })
+
+
+                    //.back(7)
+
+                    //. 51, 58
+                    .waitSeconds(3)
+                    .turn(Math.toRadians(-25))
+                    .addDisplacementMarker(()->{
+
+                        if (move == 2 ) {
+                            if (robot.v4bArm.armMotor1.getEncoderValue() > 50) {
+
+                                robot.v4bArm.reverse(100);
+                            } else {
+                                robot.v4bArm.stop();
+
+                            }
+
+
+                            robot.depositor.inTake();
+
+                            move = 3;
+
+                        }
+
+                    })
+
+                  //  .splineTo(new Vector2d(-24, 49), Math.toRadians(-90))
+
+                    .splineTo(new Vector2d(-46, 45), Math.toRadians(-90))
+
+                    .turn(Math.toRadians(90))
+                    .strafeLeft(12)
+
+                    .addDisplacementMarker(() -> {
+
+                        if( move == 3) {
+
+                            if (robot.carousel.carousel.getEncoderValue() > -600) {
+
+                                robot.carousel.start(-3000);
+
+
+                            } else {
+                                //go=6;
+                                robot.carousel.stop();
+                            }
+
+                            move =4;
+
+                        }
+                        // This marker runs after the first splineTo()
+
+                        // Run your action in here!
+                    })
+
+
+                    .waitSeconds(3)
+                    .strafeRight(24)
+                    //.back(6)
+                    //.splineTo(new Vector2d(-50, 50), Math.toRadians(70))*/
+                    .build();
+
+
+          //  new Pose2d(-24, 44+forwardVal, Math.toRadians(-90))
+            TrajectorySequence planPart6 = robot.drive.trajectorySequenceBuilder(planPart5.end())
+
+                    .waitSeconds(1.5)
+                    //.turn(Math.toRadians(-25))
+
+                    .addTemporalMarker(0, () -> {
+                        // This marker runs two seconds into the trajectory
+
+                        // Run your action in here!
+
+
+                        if (robot.v4bArm.armMotor1.getEncoderValue() > 50){
+
+                            robot.v4bArm.reverse(100);
+                        }
+
+                        else {
+                            robot.v4bArm.stop();
+
+                        }
+
+                        robot.depositor.inTake();
+
+
+
+
+                    })
+
+                    //  .splineTo(new Vector2d(-24, 49), Math.toRadians(-90))
+                  //  .splineTo(new Vector2d(-31, 58), Math.toRadians(90))
+
+
+                   // .splineTo(new Vector2d(-28, 30), Math.toRadians(0))
+
+                    .turn(Math.toRadians(-63))
+                    .back(24)
+
+                    //.strafeRight(6)
+
+                   // .splineTo(new Vector2d(-45, 60), Math.toRadians(160))
+
+                   // .splineTo(new Vector2d(-46, 47), Math.toRadians(0))
+                  //  .splineTo(new Vector2d(-46, 45), Math.toRadians(-90))
+
+                //    .turn(Math.toRadians(90))
+                 //   .strafeLeft(15)
+
+                   // .strafeRight(24)
+                    //.back(6)
+                    //.splineTo(new Vector2d(-50, 50), Math.toRadians(70))
+                    .build();
+
+
+
+            //new Pose2d(-46, 57, Math.toRadians(-90))
+            TrajectorySequence planPart7 = robot.drive.trajectorySequenceBuilder(planPart6.end())
+
+
+
+                    //.strafeRight(24)
+
+                    .turn(Math.toRadians(-50))
+                    .forward(12)
+                    //.back(6)
+                    //.splineTo(new Vector2d(-50, 50), Math.toRadians(70))
+                    .build();
+
+
+
+
 
             telemetry.addData("currentRPM", robot.carousel.currentRPM);
 
@@ -264,18 +455,19 @@ public class autonBluePark extends LinearOpMode {
 
             //sleep(5);
 
-            if(go == 0){
+         if(go == 0){
 
                 // robot.drive.followTrajectorySequence(turnPlease);
 
+                robot.drive.followTrajectorySequence(planPart5);
 
-
-                robot.drive.followTrajectorySequence(currentPlan);
-                go=1;
+                go = 1;
             }
 
 
-            else if (go == 1) {
+
+
+         /* if (go == 1) {
 
                 if(bottom) {
 
@@ -296,7 +488,7 @@ public class autonBluePark extends LinearOpMode {
                 }
                 else{
 
-                    robot.drive.followTrajectorySequence(planPart2);
+                    robot.drive.followTrajectorySequence(planPart5);
                     go = 2;
 
                 }
@@ -308,7 +500,7 @@ public class autonBluePark extends LinearOpMode {
             else if (go == 2) {
 
                 if(bottom){
-                    robot.drive.followTrajectorySequence(planPart2);
+                    robot.drive.followTrajectorySequence(planPart5);
                     go=3;
 
 
@@ -335,10 +527,10 @@ public class autonBluePark extends LinearOpMode {
 
             }
 
-            else if (go == 3) {
+            else if (go == 1) {
 
 
-                if ( (robot.v4bArm.armMotor1.getEncoderValue() > armVal+10) && (robot.v4bArm.armMotor1.getEncoderValue() < armVal-10) ){
+                if ((robot.v4bArm.armMotor1.getEncoderValue() > armVal + 10) && (robot.v4bArm.armMotor1.getEncoderValue() < armVal - 10)) {
                     // if ( robot.v4bArm.armMotor1.getEncoderValue() > armVal){
 
 
@@ -347,17 +539,18 @@ public class autonBluePark extends LinearOpMode {
 
                     robot.v4bArm.reverse(1000);
 
-                }
-                else {
+                } else {
 
                     robot.v4bArm.stop();
 
                 }
 
 
-
-
                 robot.depositor.outTake();
+
+
+
+
 
                 /*if (robot.v4bArm.armMotor1.getEncoderValue() > 755){
 
@@ -370,16 +563,18 @@ public class autonBluePark extends LinearOpMode {
 
                 }*/
 
-                go = 4;
-            }
-
-            else if (go == 4){
+            /*   go = 4;
+            }*/
 
 
 
-                robot.drive.followTrajectorySequence(planPart3);
+            else if (go == 1){
 
-                robot.drive.followTrajectorySequence(turnPlease);
+
+
+                robot.drive.followTrajectorySequence(planPart6);
+
+               // robot.drive.followTrajectorySequence(turnPlease);
 
                 go=5;
             }
@@ -409,11 +604,11 @@ public class autonBluePark extends LinearOpMode {
 
 
             else if (go == 6) {
-                robot.drive.followTrajectorySequence(planPart4);
+                robot.drive.followTrajectorySequence(planPart7);
                 go=7;
             }
 
-           /* else if (go == 7) {
+          /* else if (go == 7) {
 
 
                 robot.depositor.inTake();
