@@ -232,7 +232,7 @@ public class Robot {
 
         if (x && !previousCarouselToggle){
             if (carouselOn == 0){
-                carousel.run(-0.25f);
+                carousel.run(-0.275f);
                 carouselOn = 1;
             }
 
